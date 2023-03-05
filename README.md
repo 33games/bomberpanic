@@ -1,1 +1,1 @@
-# bomberpanic
+# Bomberman: Panic Bomber
