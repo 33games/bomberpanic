@@ -1,1 +1,0 @@
-# Bomberman: Panic Bomber
