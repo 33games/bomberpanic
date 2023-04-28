@@ -1,0 +1,15 @@
+﻿  Application.cpp
+  ModuleAudio.cpp
+  ModuleCollisions.cpp
+  ModuleFadeToBlack.cpp
+  ModuleInput.cpp
+  ModuleParticles.cpp
+  ModuleRender.cpp
+  ModuleTextures.cpp
+  ModuleWindow.cpp
+  ModuleBomberman.cpp
+  SceneIntro.cpp
+  Stage1.cpp
+  Module.cpp
+  Generando código...
+  PanicBomber.vcxproj -> C:\Users\Usuari\Downloads\BomberPanic\Debug\PanicBomber.exe

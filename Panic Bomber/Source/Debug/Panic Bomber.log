@@ -1,0 +1,23 @@
+﻿  Application.cpp
+  Bomberman.cpp
+  SceneIntro.cpp
+  Collider.cpp
+  Globals.cpp
+  ModuleAudio.cpp
+  ModuleCollisions.cpp
+  ModuleFadeToBlack.cpp
+  ModuleParticles.cpp
+  ModuleBomberman.cpp
+  Stage1.cpp
+  ModuleInput.cpp
+  ModuleRender.cpp
+  ModuleTextures.cpp
+  ModuleWindow.cpp
+  Main.cpp
+C:\Users\Usuari\Downloads\Projecte-1-copy\Projecte-1-dev\Project_6_Solution\Source\Application\Main.cpp(32,12): warning C4244: 'argumento': conversión de 'time_t' a 'unsigned int'; posible pérdida de datos
+  Module.cpp
+  Particle.cpp
+C:\Users\Usuari\Downloads\Projecte-1-copy\Projecte-1-dev\Project_6_Solution\Source\Entities\Particle.cpp(37,19): warning C4018: '>=': no coinciden signed/unsigned
+  Generando código...
+  LINK : no se encontró C:\Users\Usuari\Downloads\Projecte-1-copy\Projecte-1-dev\Debug\PanicBomber.exe o no lo generó el último vínculo incremental; ejecutando vínculo completo
+  Panic Bomber.vcxproj -> C:\Users\Usuari\Downloads\Projecte-1-copy\Projecte-1-dev\Debug\PanicBomber.exe

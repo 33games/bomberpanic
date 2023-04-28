@@ -1,0 +1,56 @@
+#include "SceneIntro.h"
+
+#include "../../Application/Application.h"
+#include "../Core/ModuleTextures.h"
+#include "../Core/ModuleRender.h"
+#include "../Core/ModuleAudio.h"
+#include "../Core/ModuleInput.h"
+#include "../Core/ModuleFadeToBlack.h"
+#include "../Gameplay/ModuleBomberman.h"
+#include <SDL/include/SDL_scancode.h>
+
+SceneIntro::SceneIntro(bool startEnabled) : Module(startEnabled)
+{
+
+}
+
+SceneIntro::~SceneIntro()
+{
+
+}
+
+
+bool SceneIntro::Start()
+{
+	LOG("Loading background assets");
+
+	bool ret = true;
+
+	bgTexture = App->textures->Load("Assets/Sprites/startScreen.png");
+	App->audio->PlayMusic("Assets/Music/Title.ogg", 1.0f);
+
+	App->render->camera.x = 0;
+	App->render->camera.y = 0;
+
+
+	return ret;
+}
+
+Update_Status SceneIntro::Update()
+{
+	if (App->input->keys[SDL_SCANCODE_SPACE] == KEY_STATE::KEY_DOWN)
+	{
+		App->fade->FadeToBlack(this, (Module*)App->stage1, 90);
+	}
+
+	return Update_Status::UPDATE_CONTINUE;
+}
+
+
+Update_Status SceneIntro::PostUpdate()
+{
+
+	App->render->Blit(bgTexture, 0, 0, NULL);
+
+	return Update_Status::UPDATE_CONTINUE;
+}
