@@ -33,7 +33,7 @@ public:
 
 	SDL_Rect camera = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 
-	int cameraSpeed = 3;
+	int cameraSpeed = 0;
 
 };
 

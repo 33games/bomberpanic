@@ -3,265 +3,293 @@
 #include "../../Application/Application.h"
 
 #include "../Core/ModuleRender.h"
-#include "../Core/ModuleCollisions.h"
 #include "../Core/ModuleTextures.h"
 #include "../Core/ModuleInput.h"
+#include "Stage1.h"
 
 #include "../External_Libraries/SDL_image/include/SDL_image.h"
 
+
+
 ModuleBomberman::ModuleBomberman(bool startEnabled) : Module(startEnabled)
 {
-
-}
-
-ModuleBomberman::~ModuleBomberman()
-{
-	for (uint i = 0; i < MAX_BOMBERMAN; i++)
+	hole = rand() % 4;
+	switch (hole)
 	{
-		if (bombermanList[i] != nullptr) {
-			delete bombermanList[i];
-			bombermanList[i] = nullptr;
+	case 0:
+		//Upper-left
+		block[0].color = rand() % 5;
+		block[0].pos.x = 80;
+		block[0].pos.y = 16;
+
+		block[1].color = rand() % 5;
+		block[1].pos.x = 80;
+		block[1].pos.y = 32;
+
+		block[2].color = rand() % 5;
+		block[2].pos.x = 64;
+		block[2].pos.y = 32;
+		break;
+	case 1:
+		//Upper-right
+		block[0].color = rand() % 5;
+		block[0].pos.x = 80;
+		block[0].pos.y = 32;
+
+		block[1].color = rand() % 5;
+		block[1].pos.x = 64;
+		block[1].pos.y = 32;
+
+		block[2].color = rand() % 5;
+		block[2].pos.x = 64;
+		block[2].pos.y = 16;
+		break;
+	case 2:
+		//Bottom-right
+		block[0].color = rand() % 5;
+		block[0].pos.x = 64;
+		block[0].pos.y = 32;
+
+		block[1].color = rand() % 5;
+		block[1].pos.x = 64;
+		block[1].pos.y = 16;
+
+		block[2].color = rand() % 5;
+		block[2].pos.x = 80;
+		block[2].pos.y = 16;
+		break;
+	case 3:
+		//Bottom-left
+		block[0].color = rand() % 5;
+		block[0].pos.x = 64;
+		block[0].pos.y = 16;
+
+		block[1].color = rand() % 5;
+		block[1].pos.x = 80;
+		block[1].pos.y = 16;
+
+		block[2].color = rand() % 5;
+		block[2].pos.x = 80;
+		block[2].pos.y = 32;
+		break;
+	}
+
+	for (int i = 0; i < 3; i++) {
+		
+		switch (block[i].color) {
+		case 0:
+			//Black Bomberman
+			block[i].animationBomberman.PushBack({ 0, 0, 16, 16 });
+			block[i].animationBomberman.PushBack({ 16, 0, 16, 16 });
+			block[i].animationBomberman.PushBack({ 32, 0, 16, 16 });
+			block[i].animationBomberman.PushBack({ 48, 0, 16, 16 });
+			block[i].animationBomberman.PushBack({ 64, 0, 16, 16 });
+			block[i].animationBomberman.PushBack({ 80, 0, 16, 16 });
+			block[i].animationBomberman.PushBack({ 96, 0, 16, 16 });
+			block[i].animationBomberman.PushBack({ 112, 0, 16, 16 });
+			block[i].animationBomberman.PushBack({ 128, 0, 16, 16 });
+			block[i].animationBomberman.PushBack({ 144, 0, 16, 16 });
+			block[i].animationBomberman.PushBack({ 160, 0, 16, 16 });
+			block[i].animationBomberman.PushBack({ 176, 0, 16, 16 });
+			block[i].animationBomberman.PushBack({ 192, 0, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0, 0, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0, 0, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0, 0, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0, 0, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0, 0, 16, 16 });
+			block[i].animationBomberman.speed = 0.10f;
+			block[i].currentAnimation = &block[i].animationBomberman;
+			break;
+		case 1:
+			//White Bomberman
+			block[i].animationBomberman.PushBack({ 0, 16, 16, 16 });
+			block[i].animationBomberman.PushBack({ 16, 16, 16, 16 });
+			block[i].animationBomberman.PushBack({ 32, 16, 16, 16 });
+			block[i].animationBomberman.PushBack({ 48, 16, 16, 16 });
+			block[i].animationBomberman.PushBack({ 64, 16, 16, 16 });
+			block[i].animationBomberman.PushBack({ 80, 16, 16, 16 });
+			block[i].animationBomberman.PushBack({ 96, 16, 16, 16 });
+			block[i].animationBomberman.PushBack({ 112, 16, 16, 16 });
+			block[i].animationBomberman.PushBack({ 128, 16, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0, 16, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0, 16, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0, 16, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0, 16, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0, 16, 16, 16 });
+			block[i].animationBomberman.speed = 0.10f;
+			block[i].currentAnimation = &block[i].animationBomberman;
+			break;
+		case 2:
+			//Red Bomberman
+			block[i].animationBomberman.PushBack({ 0, 32, 16, 16 });
+			block[i].animationBomberman.PushBack({ 16, 32, 16, 16 });
+			block[i].animationBomberman.PushBack({ 32, 32, 16, 16 });
+			block[i].animationBomberman.PushBack({ 48, 32, 16, 16 });
+			block[i].animationBomberman.PushBack({ 64, 32, 16, 16 });
+			block[i].animationBomberman.PushBack({ 80, 32, 16, 16 });
+			block[i].animationBomberman.PushBack({ 96, 32, 16, 16 });
+			block[i].animationBomberman.PushBack({ 112, 32, 16, 16 });
+			block[i].animationBomberman.PushBack({ 128, 32, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0, 32, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0, 32, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0, 32, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0, 32, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0, 32, 16, 16 });
+			block[i].animationBomberman.speed = 0.10f;
+			block[i].currentAnimation = &block[i].animationBomberman;
+			break;
+		case 3:
+			//Blue Bomberman
+			block[i].animationBomberman.PushBack({ 0, 48, 16, 16 });
+			block[i].animationBomberman.PushBack({ 16, 48, 16, 16 });
+			block[i].animationBomberman.PushBack({ 32, 48, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0, 48, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0, 48, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0, 48, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0, 48, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0, 48, 16, 16 });
+			block[i].animationBomberman.speed = 0.10f;
+			block[i].currentAnimation = &block[i].animationBomberman;
+			break;
+		case 4:
+			//Green Bomberman
+			block[i].animationBomberman.PushBack({ 0,  64, 16, 16 });
+			block[i].animationBomberman.PushBack({ 16, 64, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0,  64, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0,  64, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0,  64, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0,  64, 16, 16 });
+			block[i].animationBomberman.PushBack({ 0,  64, 16, 16 });
+			block[i].animationBomberman.speed = 0.10f;
+			block[i].currentAnimation = &block[i].animationBomberman;
+			break;
 		}
 	}
 }
 
-bool ModuleBomberman::Start()
+ModuleBomberman::~ModuleBomberman()
 {
 
+}
 
+bool ModuleBomberman::Start()
+{
 	textureBomberman = App->textures->Load("Assets/Sprites/HeadsAndBombs.png");
 	if (textureBomberman == nullptr) return false;
-
-	Bomberman* bomberman = new Bomberman();
-	bomberman->position.create(64, 16);
-	bomberman->collider = App->collisions->AddCollider({ 64,16,16,16 }, Collider::Type::BOMBERMAN, this);
-	bomberman->texture = textureBomberman;
-	switch (bomberman->color) {
-	case 0:
-		//Black Bomberman
-		animationBomberman.PushBack({ 0, 0, 16, 16 });
-		animationBomberman.PushBack({ 16, 0, 16, 16 });
-		animationBomberman.PushBack({ 32, 0, 16, 16 });
-		animationBomberman.PushBack({ 48, 0, 16, 16 });
-		animationBomberman.PushBack({ 64, 0, 16, 16 });
-		animationBomberman.PushBack({ 80, 0, 16, 16 });
-		animationBomberman.PushBack({ 96, 0, 16, 16 });
-		animationBomberman.PushBack({ 112, 0, 16, 16 });
-		animationBomberman.PushBack({ 128, 0, 16, 16 });
-		animationBomberman.PushBack({ 144, 0, 16, 16 });
-		animationBomberman.PushBack({ 160, 0, 16, 16 });
-		animationBomberman.PushBack({ 176, 0, 16, 16 });
-		animationBomberman.PushBack({ 192, 0, 16, 16 });
-		animationBomberman.speed = 0.10f;
-		bomberman->SetAnimation(animationBomberman);
-		break;
-	case 1:
-		//White Bomberman
-		animationBomberman.PushBack({ 0, 16, 16, 16 });
-		animationBomberman.PushBack({ 16, 16, 16, 16 });
-		animationBomberman.PushBack({ 32, 16, 16, 16 });
-		animationBomberman.PushBack({ 48, 16, 16, 16 });
-		animationBomberman.PushBack({ 64, 16, 16, 16 });
-		animationBomberman.PushBack({ 80, 16, 16, 16 });
-		animationBomberman.PushBack({ 96, 16, 16, 16 });
-		animationBomberman.PushBack({ 112, 16, 16, 16 });
-		animationBomberman.PushBack({ 128, 16, 16, 16 });
-		animationBomberman.speed = 0.10f;
-		bomberman->SetAnimation(animationBomberman);
-		break;
-	case 2:
-		//Red Bomberman
-		animationBomberman.PushBack({ 0, 32, 16, 16 });
-		animationBomberman.PushBack({ 16, 32, 16, 16 });
-		animationBomberman.PushBack({ 32, 32, 16, 16 });
-		animationBomberman.PushBack({ 48, 32, 16, 16 });
-		animationBomberman.PushBack({ 64, 32, 16, 16 });
-		animationBomberman.PushBack({ 80, 32, 16, 16 });
-		animationBomberman.PushBack({ 96, 32, 16, 16 });
-		animationBomberman.PushBack({ 112, 32, 16, 16 });
-		animationBomberman.PushBack({ 128, 32, 16, 16 });
-		animationBomberman.speed = 0.10f;
-		bomberman->SetAnimation(animationBomberman);
-		break;
-	case 3:
-		//Blue Bomberman
-		animationBomberman.PushBack({ 0, 48, 16, 16 });
-		animationBomberman.PushBack({ 16, 48, 16, 16 });
-		animationBomberman.PushBack({ 32, 48, 16, 16 });
-		animationBomberman.speed = 0.02f;
-		bomberman->SetAnimation(animationBomberman);
-		break;
-	case 4:
-		//Green Bomberman
-		animationBomberman.PushBack({ 0,  64, 16, 16 });
-		animationBomberman.PushBack({ 16, 64, 16, 16 });
-		animationBomberman.speed = 0.01f;
-		bomberman->SetAnimation(animationBomberman);
-		break;
-	};
-
-	bomberman->moving = true;
-	currentBomberman = AddBomberman(*bomberman);
-
-	Collider& pCol = *currentBomberman->collider;
-	collider = new Collider(pCol.rect, pCol.type);
 	
+	Stage1* Stage1 = App->stage1;
+
 	return true;
 }
 
 Update_Status ModuleBomberman::Update()
 {
-	Update_Status ret = Update_Status::UPDATE_CONTINUE;
-
-	for (uint i = 0; i < MAX_BOMBERMAN; i++)
-	{
-		Bomberman* bomberman = bombermanList[i];
-
-		if (bomberman == nullptr) continue;
-
-		bomberman->currentAnimation.Update();
+	KEY_STATE* keys = App->input->keys;
+	for (int i = 0; i < 3; i++) {
+		block[i].currentAnimation->Update();
+		if (App->stage1->DownOpen(block[i].pos.x / 16, block[i].pos.y / 16) && block[i].falling == true) {
+			block[i].pos.y += block[i].speed;
+		}else {
+			block[i].falling = false;
+			block[0].active = false;
+			block[1].active = false;
+			block[2].active = false;
+			App->stage1->Square(block[i].pos.x / 16, block[i].pos.y / 16, block[i].color);
+		}
 	}
-
-	if (currentBomberman != nullptr) {
-
-
-
-		if (dropDelay == 0) {
-			if (!WillCollide({ 0,16 })) {
-				dropDelay = fastFall ? MIN_DROP_DELAY : MAX_DROP_DELAY;
-				currentBomberman->position.y += 16;
+	if (block[0].active && block[1].active && block[2].active) {
+		if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_DOWN) {
+			if (App->stage1->LeftOpen(block[0].pos.x / 16, block[0].pos.y / 16) && App->stage1->LeftOpen(block[1].pos.x / 16, block[1].pos.y / 16) && App->stage1->LeftOpen(block[2].pos.x / 16, block[2].pos.y / 16)) {
+				block[0].pos.x -= 16;
+				block[1].pos.x -= 16;
+				block[2].pos.x -= 16;
+			}
+		}
+		if (keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_DOWN) {
+			if (App->stage1->RightOpen(block[0].pos.x / 16, block[0].pos.y / 16) && App->stage1->RightOpen(block[1].pos.x / 16, block[1].pos.y / 16) && App->stage1->RightOpen(block[2].pos.x / 16, block[2].pos.y / 16)) {
+				block[0].pos.x += 16;
+				block[1].pos.x += 16;
+				block[2].pos.x += 16;
+			}
+		}
+		if (keys[SDL_Scancode::SDL_SCANCODE_S] == KEY_STATE::KEY_REPEAT) {
+			if (App->stage1->DownOpen(block[0].pos.x / 16, block[0].pos.y / 16) && App->stage1->DownOpen(block[1].pos.x / 16, block[1].pos.y / 16) && App->stage1->DownOpen(block[2].pos.x / 16, block[2].pos.y / 16)) {
+				block[0].speed = 1.5;
+				block[1].speed = 1.5;
+				block[2].speed = 1.5;
 			}
 		}
 		else {
-			dropDelay--;
+			block[0].speed = 0.2;
+			block[1].speed = 0.2;
+			block[2].speed = 0.2;
 		}
-
-
-		KEY_STATE* keys = App->input->keys;
-
-		if (!WillCollide({ 0, 16 })) {
-			if (keys[SDL_Scancode::SDL_SCANCODE_S] == KEY_STATE::KEY_DOWN) {
-				dropDelay = MIN_DROP_DELAY;
-			}
-
-			fastFall = keys[SDL_Scancode::SDL_SCANCODE_S] == KEY_STATE::KEY_REPEAT;
-
-		
-			if (!WillCollide({ -16,0 })) {
-				if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_DOWN) moveDelay = 0;
-				if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_REPEAT) {
-
-					if (collidingWith == Collider::Type::WALL_RIGHT)
-						collidingWith = Collider::Type::NONE;
-
-					if (moveDelay == 0) {
-						moveDelay = MAX_MOVE_DELAY;
-						currentBomberman->position.x -= moveSpeed;
-					}
-					else {
-						moveDelay--;
-					}
-				}
-			}
-
-	
-			if (!WillCollide({ 16,0 })) {
-				if (keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_DOWN) moveDelay = 0;
-				if (keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_REPEAT) {
-
-					if (collidingWith == Collider::Type::WALL_LEFT)
-						collidingWith = Collider::Type::NONE;
-
-					if (moveDelay == 0) {
-						moveDelay = MAX_MOVE_DELAY;
-						currentBomberman->position.x += moveSpeed;
-					}
-					else {
-						moveDelay--;
-					}
-				}
+		if (keys[SDL_Scancode::SDL_SCANCODE_Q] == KEY_STATE::KEY_DOWN) {
+			switch (hole) {
+			case 0: //UL
+				block[0].pos.x -= 16;
+				block[1].pos.y -= 16;
+				block[2].pos.x += 16;
+				hole = 3;
+				break;
+			case 1: //UR
+				block[0].pos.y -= 16;
+				block[1].pos.x += 16;
+				block[2].pos.y += 16;
+				hole = 0;
+				break;
+			case 2: //BR
+				block[0].pos.x += 16;
+				block[1].pos.y += 16;
+				block[2].pos.x -= 16;
+				hole = 1;
+				break;
+			case 3: //BL
+				block[0].pos.y += 16;
+				block[1].pos.x -= 16;
+				block[2].pos.y -= 16;
+				hole = 2;
+				break;
 			}
 		}
-		else {
-			// Add code to solidify Bomberman and create a Block in its place, also create new Bomberman.
+		if (keys[SDL_Scancode::SDL_SCANCODE_E] == KEY_STATE::KEY_DOWN) {
+			switch (hole) {
+			case 0: //UL
+				block[0].pos.y += 16;
+				block[1].pos.x -= 16;
+				block[2].pos.y -= 16;
+				hole = 1;
+				break;
+			case 1: //UR
+				block[0].pos.x -= 16;
+				block[1].pos.y -= 16;
+				block[2].pos.x += 16;
+				hole = 2;
+				break;
+			case 2: //BR
+				block[0].pos.y -= 16;
+				block[1].pos.x += 16;
+				block[2].pos.y += 16;
+				hole = 3;
+				break;
+			case 3: //BL
+				block[0].pos.x += 16;
+				block[1].pos.y += 16;
+				block[2].pos.x -= 16;
+				hole = 0;
+				break;
+			}
 		}
-
-
-
-
-		currentBomberman->collider->SetPos(currentBomberman->position.x, currentBomberman->position.y);
-
+		Update_Status ret = Update_Status::UPDATE_CONTINUE;
+		return ret;
 	}
-
-
-	return ret;
 }
 
 Update_Status ModuleBomberman::PostUpdate()
 {
 	Update_Status ret = Update_Status::UPDATE_CONTINUE;
-
-	for (uint i = 0; i < MAX_BOMBERMAN; i++)
-	{
-		Bomberman* bomberman = bombermanList[i];
-		if (bomberman == nullptr) continue;
-		SDL_Rect currFrame = bomberman->currentAnimation.GetCurrentFrame();
-		iPoint pos = bomberman->position;
-		SDL_Texture* texture = bomberman->texture;
-		App->render->Blit(texture, pos.x, pos.y, &currFrame);
+	for (int i = 0; i < 3; i++) {
+		App->render->Blit(textureBomberman, block[i].pos.x, block[i].pos.y, &block[i].currentAnimation->GetCurrentFrame());
 	}
-
 	return ret;
-}
-
-void ModuleBomberman::OnCollision(Collider* c1, Collider* c2)
-{
-	if (c1->type == Collider::Type::BOMBERMAN) {
-		switch (c2->type) {
-			case Collider::Type::WALL: 
-			case Collider::Type::WALL_LEFT:
-			case Collider::Type::WALL_RIGHT:
-			case Collider::Type::BLOCK: {
-				collidingWith = c2->type;
-				break;
-			}
-		}
-	}
-	else if (c2->type == Collider::Type::BOMBERMAN) {
-		switch (c1->type) {
-			case Collider::Type::WALL_LEFT:
-			case Collider::Type::WALL_RIGHT:
-			case Collider::Type::WALL:
-			case Collider::Type::BLOCK: {
-				collidingWith = c2->type;
-				break;
-			}
-		}
-	}
-
-}
-
-Bomberman* ModuleBomberman::AddBomberman(const Bomberman& bomberman)
-{
-	for (uint i = 0; i < MAX_BOMBERMAN; i++) {
-		if (bombermanList[i] == nullptr) {
-			Bomberman* newbomberman = new Bomberman(bomberman);
-			return bombermanList[i] = newbomberman;
-		}
-	}
-	return nullptr;
-}
-
-bool ModuleBomberman::WillCollide(iPoint position)
-{
-	position += currentBomberman->position;
-	collider->SetPos(position.x, position.y);
-	
-	for (size_t i = 0; i < MAX_WALLS; i++)
-	{
-		if (walls[i] != nullptr && collider->Intersects(walls[i]->rect)) {
-			return true;
-		}
-	}
-	return false;
 }

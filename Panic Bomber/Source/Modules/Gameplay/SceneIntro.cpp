@@ -38,9 +38,9 @@ bool SceneIntro::Start()
 
 Update_Status SceneIntro::Update()
 {
-	if (App->input->keys[SDL_SCANCODE_SPACE] == KEY_STATE::KEY_DOWN)
+	if (this->IsEnabled() && App->input->keys[SDL_SCANCODE_SPACE] == KEY_STATE::KEY_DOWN)
 	{
-		App->fade->FadeToBlack(this, (Module*)App->stage1, 90);
+		App->fade->FadeToBlack((Module*)App->sceneIntro, (Module*)App->stage1, 90);
 	}
 
 	return Update_Status::UPDATE_CONTINUE;
@@ -53,4 +53,9 @@ Update_Status SceneIntro::PostUpdate()
 	App->render->Blit(bgTexture, 0, 0, NULL);
 
 	return Update_Status::UPDATE_CONTINUE;
+}
+
+bool SceneIntro::CleanUp()
+{
+	return true;
 }

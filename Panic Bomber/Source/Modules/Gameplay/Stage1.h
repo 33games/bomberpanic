@@ -20,14 +20,21 @@ public:
 
 	
 	Update_Status Update() override;
-
-	
+		
 	Update_Status PostUpdate() override;
 
 	bool CleanUp() override;
 
+	void Spawn(int x, int y, int value);
+
+	bool Square(int x, int y, int color);
+	bool LeftOpen(int x, int y);
+	bool RightOpen(int x, int y);
+	bool DownOpen(int x, int y);
+
+
 public:
-	
+	int grid[9][13];
 
 	SDL_Texture* bgTexture = nullptr;
 	

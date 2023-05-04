@@ -10,14 +10,16 @@ class ModuleWindow;
 class ModuleInput;
 class ModuleTextures;
 class ModuleAudio;
-class ModulePlayer;
+class ModuleGroups;
 class Stage1;
 class SceneIntro;
+class SceneCredits;
 class ModuleParticles;
 class ModuleCollisions;
 class ModuleFadeToBlack;
 class ModuleRender;
 class ModuleBomberman;
+class ModuleFonts;
 
 class Application
 {
@@ -41,17 +43,13 @@ public:
 	ModuleInput* input = nullptr;
 	ModuleTextures* textures = nullptr;
 	ModuleAudio* audio = nullptr;
+	ModuleFonts* fonts = nullptr;
 
-	ModulePlayer* player = nullptr;
-
+	SceneCredits* sceneCredits = nullptr;
 	SceneIntro* sceneIntro = nullptr;
 	Stage1* stage1 = nullptr;
 
-	ModuleBomberman* Bomberman = nullptr;
-
-	ModuleParticles* particles = nullptr;
-
-	ModuleCollisions* collisions = nullptr;
+	ModuleGroups* Groups = nullptr;
 	ModuleFadeToBlack* fade = nullptr;
 
 	ModuleRender* render = nullptr;

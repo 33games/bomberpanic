@@ -14,12 +14,13 @@
     <ProjectGuid>{F00B105C-B164-4FA2-AC11-FBC1A13D6F47}</ProjectGuid>
     <RootNamespace>Panic Bomber</RootNamespace>
     <ProjectName>Panic Bomber</ProjectName>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -77,43 +78,39 @@
     <ClInclude Include="Application\Application.h" />
     <ClInclude Include="Application\Globals.h" />
     <ClInclude Include="Application\MemLeaks.h" />
-    <ClInclude Include="Entities\Bomberman.h" />
-    <ClInclude Include="Entities\Particle.h" />
     <ClInclude Include="Modules\Core\ModuleAudio.h" />
-    <ClInclude Include="Modules\Core\ModuleCollisions.h" />
     <ClInclude Include="Modules\Core\ModuleFadeToBlack.h" />
+    <ClInclude Include="Modules\Core\ModuleFonts.h" />
     <ClInclude Include="Modules\Core\ModuleInput.h" />
-    <ClInclude Include="Modules\Core\ModuleParticles.h" />
     <ClInclude Include="Modules\Core\ModuleRender.h" />
     <ClInclude Include="Modules\Core\ModuleTextures.h" />
     <ClInclude Include="Modules\Core\ModuleWindow.h" />
     <ClInclude Include="Modules\Gameplay\ModuleBomberman.h" />
+    <ClInclude Include="Modules\Gameplay\ModuleGroups.h" />
+    <ClInclude Include="Modules\Gameplay\SceneCredits.h" />
     <ClInclude Include="Modules\Gameplay\SceneIntro.h" />
     <ClInclude Include="Modules\Gameplay\Stage1.h" />
     <ClInclude Include="Modules\Module.h" />
     <ClInclude Include="Utils\Animation.h" />
-    <ClInclude Include="Utils\Collider.h" />
     <ClInclude Include="Utils\p2Point.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\Application.cpp" />
     <ClCompile Include="Application\Globals.cpp" />
     <ClCompile Include="Application\Main.cpp" />
-    <ClCompile Include="Entities\Bomberman.cpp" />
-    <ClCompile Include="Entities\Particle.cpp" />
     <ClCompile Include="Modules\Core\ModuleAudio.cpp" />
-    <ClCompile Include="Modules\Core\ModuleCollisions.cpp" />
     <ClCompile Include="Modules\Core\ModuleFadeToBlack.cpp" />
+    <ClCompile Include="Modules\Core\ModuleFonts.cpp" />
     <ClCompile Include="Modules\Core\ModuleInput.cpp" />
-    <ClCompile Include="Modules\Core\ModuleParticles.cpp" />
     <ClCompile Include="Modules\Core\ModuleRender.cpp" />
     <ClCompile Include="Modules\Core\ModuleTextures.cpp" />
     <ClCompile Include="Modules\Core\ModuleWindow.cpp" />
     <ClCompile Include="Modules\Gameplay\ModuleBomberman.cpp" />
+    <ClCompile Include="Modules\Gameplay\ModuleGroups.cpp" />
+    <ClCompile Include="Modules\Gameplay\SceneCredits.cpp" />
     <ClCompile Include="Modules\Gameplay\SceneIntro.cpp" />
     <ClCompile Include="Modules\Gameplay\Stage1.cpp" />
     <ClCompile Include="Modules\Module.cpp" />
-    <ClCompile Include="Utils\Collider.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

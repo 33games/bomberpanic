@@ -2,14 +2,24 @@
 
 #include "../../Application/Application.h"
 #include "../Core/ModuleTextures.h"
+#include "../Core/ModuleInput.h"
 #include "../Core/ModuleRender.h"
 #include "../Core/ModuleAudio.h"
-#include "../Core/ModuleCollisions.h"
+#include "../Core/ModuleFadetoBlack.h"
 #include "ModuleBomberman.h"
+#include "ModuleGroups.h"
+#include "../External_Libraries/SDL_image/include/SDL_image.h"
 
 Stage1::Stage1(bool startEnabled) : Module(startEnabled)
 {
-
+	for (int i = 0; i < 9; i++)
+	{
+		for (int j = 0; j < 13; j++)
+		{
+			grid[i][j] = 9;
+		}
+	}
+	
 }
 
 Stage1::~Stage1()
@@ -29,21 +39,20 @@ bool Stage1::Start()
 
 	LOG("Loading number assets");
 
-		spritesTexture = App->textures->Load("Assets/Sprites/sprites.png");
+	ModuleGroups& Groups = *App->Groups;
 
-
-	ModuleBomberman& Bomberman = *App->Bomberman;
-	Bomberman.walls[0] = App->collisions->AddCollider({9,9,7,206},Collider::Type::WALL_LEFT,(Module*)App->Bomberman);
-	Bomberman.walls[1] = App->collisions->AddCollider({144,9,7,206},Collider::Type::WALL_RIGHT,(Module*)App->Bomberman);
-	Bomberman.walls[2] = App->collisions->AddCollider({9,208,142,7},Collider::Type::WALL,(Module*)App->Bomberman);
-	
-	App->Bomberman->Enable();
+	App->Groups->Enable();
 
 	return ret;
 }
 
 Update_Status Stage1::Update()
 {
+	KEY_STATE* keys = App->input->keys;
+
+	if (this->IsEnabled() && keys[SDL_Scancode::SDL_SCANCODE_L] == KEY_STATE::KEY_DOWN) {
+		App->fade->FadeToBlack((Module*)App->stage1, (Module*)App->sceneIntro, 90);
+	}
 	return Update_Status::UPDATE_CONTINUE;
 }
 
@@ -56,8 +65,54 @@ Update_Status Stage1::PostUpdate()
 	return Update_Status::UPDATE_CONTINUE;
 }
 
+bool Stage1::Square(int x, int y, int color)
+{
+	if (grid[x][y]==9) {
+		grid[x][y] = color;
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool Stage1::LeftOpen(int x, int y)
+{
+	if (grid[x-1][y] == 9 && x > 1 && y>2) {
+		return true;
+	}
+	else {
+		return false;
+	}
+
+}
+
+bool Stage1::RightOpen(int x, int y)
+{
+	if (grid[x+1][y] == 9 && x <= 9 && y>2)
+	{
+		return true;
+	}
+	else {
+		return false;
+	}
+
+}
+
+bool Stage1::DownOpen(int x, int y)
+{
+	if (grid[x][y+1] == 9 && y < 12) {
+		return true;
+	}
+	else {
+		return false;
+	}
+
+}
+
 bool Stage1::CleanUp()
 {
-	App->Bomberman->Disable();	
+	App->Groups->Disable();
+	App->stage1->Disable();
 	return true;
 }

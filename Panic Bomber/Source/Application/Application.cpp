@@ -7,11 +7,12 @@
 #include "../Modules/Core/ModuleAudio.h"
 #include "../Modules/Gameplay/Stage1.h"
 #include "../Modules/Gameplay/SceneIntro.h"
-#include "../Modules/Core/ModuleParticles.h"
-#include "../Modules/Core/ModuleCollisions.h"
 #include "../Modules/Core/ModuleRender.h"
 #include "../Modules/Gameplay/ModuleBomberman.h"
+#include "../Modules/Gameplay/ModuleGroups.h"
 #include "../Modules/Core/ModuleFadeToBlack.h"
+#include "../Modules/Gameplay/SceneCredits.h"
+#include "../Modules/Core/ModuleFonts.h"
 
 Application::Application()
 {
@@ -19,18 +20,19 @@ Application::Application()
 	modules[1] = input = new ModuleInput(true);
 	modules[2] = textures = new ModuleTextures(true);
 	modules[3] = audio = new ModuleAudio(true);
+	modules[4] = fonts = new ModuleFonts(true);
 
-	modules[4] = sceneIntro = new SceneIntro(true);
-	modules[5] = stage1 = new Stage1(false);
-		
-	modules[6] = Bomberman = new ModuleBomberman(false);
+	modules[5] = sceneCredits = new SceneCredits(true);
+	modules[6] = sceneIntro = new SceneIntro(false);
+	modules[7] = stage1 = new Stage1(false);
 
-	modules[7] = particles = new ModuleParticles(true);
-	modules[8] = collisions = new ModuleCollisions(true);
+	modules[8] = Groups = new ModuleGroups(false);
 
-	modules[9] = fade = new ModuleFadeToBlack(true);
+	modules[9] = fade = new ModuleFadeToBlack(true); //to false
 
 	modules[10] = render = new ModuleRender(true);
+
+	//modules[9] = fade = new ModuleCredits(true);
 }
 
 Application::~Application()
