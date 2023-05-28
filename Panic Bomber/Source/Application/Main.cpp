@@ -87,7 +87,7 @@ int main(int argc, char* argv[])
 		}
 	}
 
-	LOG("\nBye :)\n");
+	LOG("\nStopping...\n");
 
 	delete App;
 

@@ -112,7 +112,6 @@ void ModuleGroups::HandleEnemiesSpawn()
     // Iterate all the enemies queue
     for (uint i = 0; i < MAX_BOMBERMAN; ++i)
     {
-    LOG("Spawning enemy at %d", spawnQueue[i].x * SCREEN_SIZE);
         if (bombermans[i] == nullptr)
         {
             SpawnBomberman(spawnQueue[i]);
@@ -134,9 +133,9 @@ void ModuleGroups::SpawnBomberman(const Spawnpoint& info)
             }
             else
             {
-                if (bombermans[i - 1]->block[0].active == false && bombermans[i - 1]->block[1].active == false && bombermans[i - 1]->block[2].active == false)
+                if (bombermans[i - 1]->block[0].falling == false && bombermans[i - 1]->block[1].falling == false && bombermans[i - 1]->block[2].falling == false)
                 {
-                    bombermans[i] = new ModuleBomberman(true); // use new constructor with boolean parameter
+                    bombermans[i] = new ModuleBomberman(true);
 
                     bombermans[i]->textureBomberman = texture;
                 }

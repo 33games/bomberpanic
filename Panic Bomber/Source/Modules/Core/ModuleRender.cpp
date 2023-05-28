@@ -38,6 +38,8 @@ bool ModuleRender::Init()
 		ret = false;
 	}
 
+	int size = SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+
 	return ret;
 }
 

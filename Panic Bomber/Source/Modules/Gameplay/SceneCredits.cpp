@@ -39,7 +39,10 @@ bool SceneCredits::Start()
 
 Update_Status SceneCredits::Update()
 {
-	if (this->IsEnabled() && App->input->keys[SDL_SCANCODE_SPACE] == KEY_STATE::KEY_DOWN)
+	GamePad& pad = App->input->pads[0];
+
+
+	if (this->IsEnabled() && App->input->keys[SDL_SCANCODE_SPACE] == KEY_STATE::KEY_DOWN ||this->IsEnabled() && pad.a)
 	{
 		App->fade->FadeToBlack((Module*)App->sceneCredits, (Module*)App->sceneIntro, 90);
 	}
@@ -58,7 +61,7 @@ Update_Status SceneCredits::PostUpdate()
 	App->fonts->BlitText(5, 140, scoreFont, "upc _citm_");
 	App->fonts->BlitText(5, 150, scoreFont, "tutor; jesus alonso");
 	App->fonts->BlitText(5, 170, scoreFont, "los maquinas; pol alvarez,");
-	App->fonts->BlitText(5, 180, scoreFont, "marc avante, pol celaya, ivan molins.");
+	App->fonts->BlitText(5, 180, scoreFont, "marc vante, pol celaya, ivan molins.");
 	App->fonts->BlitText(5, 200, scoreFont, "github.com/33games/bomberpanic/");
 
 	return Update_Status::UPDATE_CONTINUE;

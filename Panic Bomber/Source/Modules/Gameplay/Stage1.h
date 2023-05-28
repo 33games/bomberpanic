@@ -3,13 +3,23 @@
 
 #include "../Module.h"
 #include "../../Utils/Animation.h"
+#include "./ModuleBomberman.h"
+
+#define WINNING_SCORE 50000
+#define COLUMNS 10
+#define ROWS 14
 
 struct SDL_Texture;
+
+struct grid {
+	int color;
+	Bomberman* bomberman;
+};
 
 class Stage1 : public Module
 {
 public:
-	
+
 	Stage1(bool startEnabled);
 
 
@@ -27,14 +37,21 @@ public:
 
 	void Spawn(int x, int y, int value);
 
-	bool Square(int x, int y, int color);
+	bool Square(int x, int y, int color, Bomberman man);
 	bool LeftOpen(int x, int y);
 	bool RightOpen(int x, int y);
 	bool DownOpen(int x, int y);
-
+	bool DeleteAndFall(int color);
+	bool KeepChecking(int x, int y, int color, int direction, Bomberman man);
 
 public:
-	int grid[9][13];
+	grid grid[COLUMNS][ROWS];
+
+	int score = 0;
+
+	char scoreText[10] = { "\0" };
+
+	int scoreFont = -1;
 
 	SDL_Texture* bgTexture = nullptr;
 	

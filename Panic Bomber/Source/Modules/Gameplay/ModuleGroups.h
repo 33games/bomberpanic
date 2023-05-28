@@ -47,11 +47,11 @@ public:
 
     void SpawnBomberman(const Spawnpoint& info);
 
+    ModuleBomberman* bombermans[MAX_BOMBERMAN] = { nullptr };
+
 private:
 
     Spawnpoint spawnQueue[MAX_BOMBERMAN];
-
-    ModuleBomberman* bombermans[MAX_BOMBERMAN] = { nullptr };
 };
 
 #endif // !__MODULE_PLAYERS_H__
