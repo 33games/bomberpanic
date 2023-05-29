@@ -1,25 +1,35 @@
 ﻿D:\Visual Studio\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(467,5): warning MSB8028: El directorio intermedio (Debug\) contiene archivos compartidos de otro proyecto (PanicBomber.vcxproj). Esto puede dar lugar a un comportamiento incorrecto de limpieza y recompilación.
   Stage1.cpp
-D:\Downloads\bomberpanic-dev\Panic Bomber\Source\Modules\Gameplay\ModuleBomberman.h(39,19): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
-D:\Downloads\bomberpanic-dev\Panic Bomber\Source\Modules\Gameplay\Stage1.cpp(160,80): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+D:\GitHub\bomberpanic\Panic Bomber\Source\Modules\Gameplay\ModuleBomberman.h(39,19): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+D:\GitHub\bomberpanic\Panic Bomber\Source\Modules\Gameplay\Stage1.cpp(86,18): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
           with
           [
               TYPE=float
           ]
-D:\Downloads\bomberpanic-dev\Panic Bomber\Source\Modules\Gameplay\Stage1.cpp(160,46): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+D:\GitHub\bomberpanic\Panic Bomber\Source\Modules\Gameplay\Stage1.cpp(87,18): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
           with
           [
               TYPE=float
           ]
-D:\Downloads\bomberpanic-dev\Panic Bomber\Source\Modules\Gameplay\Stage1.cpp(165,75): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+D:\GitHub\bomberpanic\Panic Bomber\Source\Modules\Gameplay\Stage1.cpp(164,80): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
           with
           [
               TYPE=float
           ]
-D:\Downloads\bomberpanic-dev\Panic Bomber\Source\Modules\Gameplay\Stage1.cpp(165,41): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+D:\GitHub\bomberpanic\Panic Bomber\Source\Modules\Gameplay\Stage1.cpp(164,46): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
           with
           [
               TYPE=float
           ]
-D:\Downloads\bomberpanic-dev\Panic Bomber\Source\Modules\Gameplay\Stage1.cpp(94): warning C4715: 'Stage1::Square': no todas las rutas de acceso de control devuelven un valor
-  Project_6_Solution.vcxproj -> D:\Downloads\bomberpanic-dev\Debug\Panic Bomber.exe
+D:\GitHub\bomberpanic\Panic Bomber\Source\Modules\Gameplay\Stage1.cpp(169,75): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+D:\GitHub\bomberpanic\Panic Bomber\Source\Modules\Gameplay\Stage1.cpp(169,41): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+D:\GitHub\bomberpanic\Panic Bomber\Source\Modules\Gameplay\Stage1.cpp(99): warning C4715: 'Stage1::Square': no todas las rutas de acceso de control devuelven un valor
+  Project_6_Solution.vcxproj -> D:\GitHub\bomberpanic\Debug\Panic Bomber.exe

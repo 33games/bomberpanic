@@ -49,6 +49,8 @@ public:
 
 	int score = 0;
 
+	uint place;
+
 	char scoreText[10] = { "\0" };
 
 	int scoreFont = -1;

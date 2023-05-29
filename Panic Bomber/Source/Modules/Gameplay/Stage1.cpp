@@ -38,6 +38,8 @@ bool Stage1::Start()
 
 	bgTexture = App->textures->Load("Assets/Sprites/BattleArena.png");
 	App->audio->PlayMusic("Assets/Music/Stage 1.ogg", 1.0f);
+	place = App->audio->LoadFx("Assets/SFX/place.wav");
+	
 
 	LOG("Loading number assets");
 
@@ -81,6 +83,9 @@ bool Stage1::Square(int x, int y, int color, Bomberman man)
 	else {
 		if (grid[x][y].color == EMPTY_SPACE)
 		{
+			man.pos.x = x * 16;
+			man.pos.y = y * 16;
+			App->audio->PlayFx(place, 0);
 			grid[x][y].color = color;
 			grid[x][y].bomberman = &man;
 			DeleteAndFall(color);
@@ -136,7 +141,6 @@ bool Stage1::DeleteAndFall(int color) {
 				//*grid[i + 1][j].bomberman;
 				//*grid[i][j].bomberman;
 
-				
 
 				grid[i - 1][j].color = EMPTY_SPACE;
 				grid[i + 1][j].color = EMPTY_SPACE;
