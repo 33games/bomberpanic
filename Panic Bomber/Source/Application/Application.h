@@ -18,7 +18,7 @@ class ModuleParticles;
 class ModuleCollisions;
 class ModuleFadeToBlack;
 class ModuleRender;
-class ModuleBomberman;
+class ModulePieces;
 class ModuleFonts;
 
 class Application

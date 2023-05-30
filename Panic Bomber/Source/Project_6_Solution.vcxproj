@@ -85,7 +85,7 @@
     <ClInclude Include="Modules\Core\ModuleRender.h" />
     <ClInclude Include="Modules\Core\ModuleTextures.h" />
     <ClInclude Include="Modules\Core\ModuleWindow.h" />
-    <ClInclude Include="Modules\Gameplay\ModuleBomberman.h" />
+    <ClInclude Include="Modules\Gameplay\ModulePieces.h" />
     <ClInclude Include="Modules\Gameplay\ModuleGroups.h" />
     <ClInclude Include="Modules\Gameplay\SceneCredits.h" />
     <ClInclude Include="Modules\Gameplay\SceneIntro.h" />
@@ -105,7 +105,7 @@
     <ClCompile Include="Modules\Core\ModuleRender.cpp" />
     <ClCompile Include="Modules\Core\ModuleTextures.cpp" />
     <ClCompile Include="Modules\Core\ModuleWindow.cpp" />
-    <ClCompile Include="Modules\Gameplay\ModuleBomberman.cpp" />
+    <ClCompile Include="Modules\Gameplay\ModulePieces.cpp" />
     <ClCompile Include="Modules\Gameplay\ModuleGroups.cpp" />
     <ClCompile Include="Modules\Gameplay\SceneCredits.cpp" />
     <ClCompile Include="Modules\Gameplay\SceneIntro.cpp" />

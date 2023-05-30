@@ -6,7 +6,7 @@
 #include "../Core/ModuleRender.h"
 #include "../Core/ModuleAudio.h"
 #include "../Core/ModuleFadetoBlack.h"
-#include "ModuleBomberman.h"
+#include "ModulePieces.h"
 #include "ModuleGroups.h"
 #include "../External_Libraries/SDL_image/include/SDL_image.h"
 #include "../Core/ModuleFonts.h"
@@ -75,20 +75,23 @@ Update_Status Stage1::PostUpdate()
 	return Update_Status::UPDATE_CONTINUE;
 }
 
-bool Stage1::Square(int x, int y, int color, Bomberman man)
+bool Stage1::Square(int x, int y, int color, Puyo piece)
 {
 	if (y <= 2) {
 		App->fade->FadeToBlack((Module*)App->stage1, (Module*)App->sceneIntro, 90);
+		return true;
 	}
 	else {
 		if (grid[x][y].color == EMPTY_SPACE)
 		{
-			man.pos.x = x * 16;
-			man.pos.y = y * 16;
+			piece.pos.x = x * 16;
+			piece.pos.y = y * 16;
 			App->audio->PlayFx(place, 0);
 			grid[x][y].color = color;
-			grid[x][y].bomberman = &man;
-			DeleteAndFall(color);
+			grid[x][y].pointer = &piece;
+			DeleteMatching(color);
+			FallAgain();
+			willFall.empty();
 			//score += 50;
 			return true;
 		}
@@ -129,17 +132,27 @@ bool Stage1::DownOpen(int x, int y)
 	}
 }
 
-bool Stage1::DeleteAndFall(int color) {
+bool Stage1::DeleteMatching(int color) {
 	for (int i = 1; i < COLUMNS - 1; i++) {
 		for (int j = 1; j < ROWS - 1; j++) {
 			//Horizontal
 			if (grid[i - 1][j].color == color && grid[i + 1][j].color == color && grid[i][j].color == color) {
 
-				//delete grid[i][j].bomberman;
-				
-				//*grid[i - 1][j].bomberman;
-				//*grid[i + 1][j].bomberman;
-				//*grid[i][j].bomberman;
+				if (grid[i - 1][j - 1].pointer != nullptr) {
+					willFall.push_back(grid[i - 1][j - 1].pointer);
+				};
+				if (grid[i + 1][j - 1].pointer != nullptr) {
+					willFall.push_back(grid[i + 1][j - 1].pointer);
+				};
+				if (grid[i][j - 1].pointer != nullptr) {
+					willFall.push_back(grid[i][j - 1].pointer);
+				};
+
+				//delete grid[i][j].pointer;
+
+				grid[i - 1][j].pointer = nullptr;
+				grid[i + 1][j].pointer = nullptr;
+				grid[i][j].pointer = nullptr;
 
 
 				grid[i - 1][j].color = EMPTY_SPACE;
@@ -150,26 +163,24 @@ bool Stage1::DeleteAndFall(int color) {
 			//Vertical
 			if (grid[i][j - 1].color == color && grid[i][j + 1].color == color && grid[i][j].color == color) {
 
-				//grid[i][j - 1].bomberman->currentAnimation = nullptr;
-				//grid[i][j + 1].bomberman->currentAnimation = nullptr;
-				//grid[i][j].bomberman->currentAnimation = nullptr;
+				grid[i][j - 1].pointer = nullptr;
+				grid[i][j + 1].pointer = nullptr;
+				grid[i][j].pointer = nullptr;
 
 				grid[i][j - 1].color = EMPTY_SPACE;
 				grid[i][j + 1].color = EMPTY_SPACE;
 				grid[i][j].color = EMPTY_SPACE;
 			}
-			//Pieces fall and place themselves again
-			if (grid[i][j].bomberman != nullptr && DownOpen(i, j)) {
-				grid[i][j].bomberman->falling = true;
-				if (DownOpen(grid[i][j].bomberman->pos.x / 16, grid[i][j].bomberman->pos.y / 16) && grid[i][j].bomberman->falling == true) {
-					grid[i][j].bomberman->pos.y += grid[i][j].bomberman->speed;
-				}
-				else {
-					grid[i][j].bomberman->falling = false;
-					Square(grid[i][j].bomberman->pos.x / 16, grid[i][j].bomberman->pos.y / 16, grid[i][j].bomberman->color, *grid[i][j].bomberman);
-				}
-			}
 		}
+	}
+	return true;
+}
+
+bool Stage1::FallAgain()
+{
+	for (Puyo* p : willFall) {
+		p->falling = true;
+		p = nullptr;
 	}
 	return true;
 }

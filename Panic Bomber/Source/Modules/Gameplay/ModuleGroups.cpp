@@ -1,5 +1,5 @@
 #include "ModuleGroups.h"
-#include "ModuleBomberman.h"
+#include "ModulePieces.h"
 #include "../../Application/Application.h"
 #include "../Core/ModuleRender.h"
 #include "../Core/ModuleTextures.h"
@@ -127,7 +127,7 @@ void ModuleGroups::SpawnBomberman(const Spawnpoint& info)
         {
             if (bombermans[i] == bombermans[0])
             {
-                bombermans[i] = new ModuleBomberman(true); 
+                bombermans[i] = new ModulePieces(true); 
 
                 bombermans[i]->textureBomberman = texture;
             }
@@ -135,7 +135,7 @@ void ModuleGroups::SpawnBomberman(const Spawnpoint& info)
             {
                 if (bombermans[i - 1]->block[0].falling == false && bombermans[i - 1]->block[1].falling == false && bombermans[i - 1]->block[2].falling == false)
                 {
-                    bombermans[i] = new ModuleBomberman(true);
+                    bombermans[i] = new ModulePieces(true);
 
                     bombermans[i]->textureBomberman = texture;
                 }

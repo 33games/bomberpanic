@@ -3,7 +3,9 @@
 
 #include "../Module.h"
 #include "../../Utils/Animation.h"
-#include "./ModuleBomberman.h"
+#include "./ModulePieces.h"
+#include "ModuleGroups.h"
+#include <list>
 
 #define WINNING_SCORE 50000
 #define COLUMNS 10
@@ -11,9 +13,9 @@
 
 struct SDL_Texture;
 
-struct grid {
+struct tile {
 	int color;
-	Bomberman* bomberman;
+	Puyo* pointer;
 };
 
 class Stage1 : public Module
@@ -37,15 +39,20 @@ public:
 
 	void Spawn(int x, int y, int value);
 
-	bool Square(int x, int y, int color, Bomberman man);
+	bool Square(int x, int y, int color, Puyo piece);
 	bool LeftOpen(int x, int y);
 	bool RightOpen(int x, int y);
 	bool DownOpen(int x, int y);
-	bool DeleteAndFall(int color);
-	bool KeepChecking(int x, int y, int color, int direction, Bomberman man);
+	bool DeleteMatching(int color);
+	bool FallAgain();
+	bool KeepChecking(int x, int y, int color, int direction, Puyo piece);
 
 public:
-	grid grid[COLUMNS][ROWS];
+	tile grid[COLUMNS][ROWS];
+
+	std::list<Puyo*> willFall;
+
+	//Puyo* willFall[MAX_BOMBERMAN];
 
 	int score = 0;
 

@@ -29,7 +29,7 @@ struct SDL_Texture;
 
 
 
-struct Bomberman
+struct Puyo
 {
 	fPoint pos;
 
@@ -42,12 +42,12 @@ struct Bomberman
 	Animation animationBomberman;
 };
 
-class ModuleBomberman : public Module
+class ModulePieces : public Module
 {
 public:
-    ModuleBomberman(bool startEnabled);
+    ModulePieces(bool startEnabled);
 
-    ~ModuleBomberman();
+    ~ModulePieces();
 
 	bool Start() override;
 
@@ -56,12 +56,9 @@ public:
 	Update_Status PostUpdate() override;
 
 public:
-
-	uint x, y;
-
 	int hole;
 
-	Bomberman block[3];
+	Puyo block[3];
 
 	SDL_Texture* textureBomberman = nullptr;
 };

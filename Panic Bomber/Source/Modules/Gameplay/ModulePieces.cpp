@@ -1,4 +1,4 @@
-#include "ModuleBomberman.h"
+#include "ModulePieces.h"
 
 #include "../../Application/Application.h"
 
@@ -11,7 +11,7 @@
 
 
 
-ModuleBomberman::ModuleBomberman(bool startEnabled) : Module(startEnabled)
+ModulePieces::ModulePieces(bool startEnabled) : Module(startEnabled)
 {
 	hole = rand() % POSITIONS-1;
 	switch (hole)
@@ -167,12 +167,12 @@ ModuleBomberman::ModuleBomberman(bool startEnabled) : Module(startEnabled)
 	}
 }
 
-ModuleBomberman::~ModuleBomberman()
+ModulePieces::~ModulePieces()
 {
 
 }
 
-bool ModuleBomberman::Start()
+bool ModulePieces::Start()
 {
 	textureBomberman = App->textures->Load("Assets/Sprites/HeadsAndBombs.png");
 	if (textureBomberman == nullptr) return false;
@@ -182,7 +182,7 @@ bool ModuleBomberman::Start()
 	return true;
 }
 
-Update_Status ModuleBomberman::Update()
+Update_Status ModulePieces::Update()
 {
 	KEY_STATE* keys = App->input->keys;
 
@@ -192,7 +192,8 @@ Update_Status ModuleBomberman::Update()
 		block[i].currentAnimation->Update();
 		if (App->stage1->DownOpen(block[i].pos.x / 16, block[i].pos.y / 16) && block[i].falling == true) {
 			block[i].pos.y += block[i].speed;
-		}else {
+		}
+		else {
 			block[i].falling = false;
 			block[0].speed = 1.5;
 			block[1].speed = 1.5;
@@ -291,7 +292,7 @@ Update_Status ModuleBomberman::Update()
 	}
 }
 
-Update_Status ModuleBomberman::PostUpdate()
+Update_Status ModulePieces::PostUpdate()
 {
 	Update_Status ret = Update_Status::UPDATE_CONTINUE;
 	for (int i = 0; i < 3; i++) {

@@ -8,7 +8,7 @@
 #include "../Modules/Gameplay/Stage1.h"
 #include "../Modules/Gameplay/SceneIntro.h"
 #include "../Modules/Core/ModuleRender.h"
-#include "../Modules/Gameplay/ModuleBomberman.h"
+#include "../Modules/Gameplay/ModulePieces.h"
 #include "../Modules/Gameplay/ModuleGroups.h"
 #include "../Modules/Core/ModuleFadeToBlack.h"
 #include "../Modules/Gameplay/SceneCredits.h"

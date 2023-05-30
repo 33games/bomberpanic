@@ -6,7 +6,7 @@
 #include "../Core/ModuleAudio.h"
 #include "../Core/ModuleInput.h"
 #include "../Core/ModuleFadeToBlack.h"
-#include "../Gameplay/ModuleBomberman.h"
+#include "../Gameplay/ModulePieces.h"
 #include <SDL/include/SDL_scancode.h>
 
 SceneIntro::SceneIntro(bool startEnabled) : Module(startEnabled)

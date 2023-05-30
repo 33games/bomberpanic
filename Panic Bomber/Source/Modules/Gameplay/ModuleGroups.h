@@ -2,7 +2,7 @@
 #define __MODULE_GROUPS_H__
 
 #include "../Module.h"
-#include "ModuleBomberman.h"
+#include "ModulePieces.h"
 #include "../../Utils/Animation.h"
 
 #define MAX_BOMBERMAN 33
@@ -47,7 +47,7 @@ public:
 
     void SpawnBomberman(const Spawnpoint& info);
 
-    ModuleBomberman* bombermans[MAX_BOMBERMAN] = { nullptr };
+    ModulePieces* bombermans[MAX_BOMBERMAN] = { nullptr };
 
 private:
 
