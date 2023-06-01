@@ -15,7 +15,13 @@ struct SDL_Texture;
 
 struct tile {
 	int color;
-	Puyo* pointer;
+	Puyo* pointer = nullptr;
+};
+
+struct Spawnpoint
+{
+	int x = 48 + 25;
+	int y = 32;
 };
 
 class Stage1 : public Module
@@ -37,9 +43,22 @@ public:
 
 	bool CleanUp() override;
 
+
+	void HandleEnemiesSpawn();
+
+	bool AddEnemy(int x, int y);
+
+	SDL_Texture* texture = nullptr;
+
+	Animation* currentAnimation = nullptr;
+
+	void SpawnBomberman(const Spawnpoint& info);
+
+	ModulePieces* bombermans[MAX_BOMBERMAN] = { nullptr };
+
 	void Spawn(int x, int y, int value);
 
-	bool Square(int x, int y, int color, Puyo piece);
+	bool Square(int x, int y, int color, Puyo* piece);
 	bool LeftOpen(int x, int y);
 	bool RightOpen(int x, int y);
 	bool DownOpen(int x, int y);
@@ -56,6 +75,8 @@ public:
 
 	int score = 0;
 
+	int first = 0;
+
 	uint place;
 
 	char scoreText[10] = { "\0" };
@@ -69,6 +90,8 @@ public:
 
 	
 	SDL_Texture* spritesTexture = nullptr;
+
+	Spawnpoint spawnQueue[MAX_BOMBERMAN];
 };
 
 #endif

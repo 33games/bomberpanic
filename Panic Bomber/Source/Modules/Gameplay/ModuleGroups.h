@@ -9,11 +9,7 @@
 
 struct SDL_Texture;
 
-struct Spawnpoint
-{
-    int x = 48 + 25;
-    int y = 32;
-};
+
 class ModuleGroups : public Module
 {
 public:
@@ -37,21 +33,7 @@ public:
 
     bool CleanUp() override;
 
-    void HandleEnemiesSpawn();
-
-    bool AddEnemy(int x, int y);
-
-    SDL_Texture* texture = nullptr;
-
-    Animation* currentAnimation = nullptr;
-
-    void SpawnBomberman(const Spawnpoint& info);
-
-    ModulePieces* bombermans[MAX_BOMBERMAN] = { nullptr };
-
 private:
-
-    Spawnpoint spawnQueue[MAX_BOMBERMAN];
 };
 
 #endif // !__MODULE_PLAYERS_H__

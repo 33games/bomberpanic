@@ -3,14 +3,13 @@
 
 #include "Globals.h"
 
-#define NUM_MODULES 11
+#define NUM_MODULES 10
 
 class Module;
 class ModuleWindow;
 class ModuleInput;
 class ModuleTextures;
 class ModuleAudio;
-class ModuleGroups;
 class Stage1;
 class SceneIntro;
 class SceneCredits;
@@ -49,7 +48,6 @@ public:
 	SceneIntro* sceneIntro = nullptr;
 	Stage1* stage1 = nullptr;
 
-	ModuleGroups* Groups = nullptr;
 	ModuleFadeToBlack* fade = nullptr;
 
 	ModuleRender* render = nullptr;

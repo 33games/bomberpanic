@@ -59,5 +59,6 @@ Update_Status SceneIntro::PostUpdate()
 
 bool SceneIntro::CleanUp()
 {
+	this->Disable();
 	return true;
 }

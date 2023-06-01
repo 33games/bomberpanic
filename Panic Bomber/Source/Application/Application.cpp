@@ -26,13 +26,9 @@ Application::Application()
 	modules[6] = sceneIntro = new SceneIntro(false);
 	modules[7] = stage1 = new Stage1(false);
 
-	modules[8] = Groups = new ModuleGroups(false);
+	modules[8] = fade = new ModuleFadeToBlack(true); //to false
 
-	modules[9] = fade = new ModuleFadeToBlack(true); //to false
-
-	modules[10] = render = new ModuleRender(true);
-
-	//modules[9] = fade = new ModuleCredits(true);
+	modules[9] = render = new ModuleRender(true);
 }
 
 Application::~Application()

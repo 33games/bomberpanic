@@ -6,7 +6,8 @@
 #include "../Core/ModuleTextures.h"
 #include "../Core/ModuleInput.h"
 #include "Stage1.h"
-
+#include <cmath>
+#include <iostream>
 #include "../External_Libraries/SDL_image/include/SDL_image.h"
 
 
@@ -201,7 +202,8 @@ Update_Status ModulePieces::Update()
 			block[0].active = false;
 			block[1].active = false;
 			block[2].active = false;
-			App->stage1->Square(block[i].pos.x / 16, block[i].pos.y / 16, block[i].color, block[i]);
+			block[i].pos.y = round(block[i].pos.y / 16) * 16;
+			App->stage1->Square(block[i].pos.x / 16, block[i].pos.y / 16, block[i].color, &block[i]);
 		}
 	}
 	if (block[0].active && block[1].active && block[2].active) {

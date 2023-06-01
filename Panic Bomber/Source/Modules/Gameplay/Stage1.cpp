@@ -23,6 +23,11 @@ Stage1::Stage1(bool startEnabled) : Module(startEnabled)
 			grid[i][j].color = EMPTY_SPACE;
 		}
 	}
+	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
+	{
+		bombermans[i] = nullptr;
+
+	}
 }
 
 Stage1::~Stage1()
@@ -41,14 +46,22 @@ bool Stage1::Start()
 	place = App->audio->LoadFx("Assets/SFX/place.wav");
 	
 
-	LOG("Loading number assets");
 
-	ModuleGroups& Groups = *App->Groups;
+	texture = App->textures->Load("Assets/Sprites/HeadsAndBombs.png");
+
+	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
+	{
+		if (bombermans[i] != nullptr)
+		{
+
+			bombermans[i]->Start();
+		}
+
+	}
+	LOG("Loading number assets");
 
 	char lookupTable[] = { "! @,_./0123456789$;< ?abcdefghijklmnopqrstuvwxyz" };
 	scoreFont = App->fonts->Load("Assets/Fonts/rtype_font3.png", lookupTable, 2);
-
-	App->Groups->Enable();
 
 	return ret;
 }
@@ -56,6 +69,18 @@ bool Stage1::Start()
 Update_Status Stage1::Update()
 {
 	KEY_STATE* keys = App->input->keys;
+
+	HandleEnemiesSpawn();
+
+
+	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
+	{
+		if (bombermans[i] != nullptr)
+		{
+			bombermans[i]->Update();
+		}
+
+	}
 
 	if (this->score >= WINNING_SCORE) {
 		App->fade->FadeToBlack((Module*)App->stage1, (Module*)App->sceneIntro, 90);
@@ -72,10 +97,20 @@ Update_Status Stage1::PostUpdate()
 	sprintf_s(scoreText, 10, "%7d", score);
 	App->fonts->BlitText(2, 16, scoreFont, scoreText);
 
+
+	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
+	{
+		if (bombermans[i] != nullptr)
+		{
+			bombermans[i]->PostUpdate();
+		}
+
+
+	}
 	return Update_Status::UPDATE_CONTINUE;
 }
 
-bool Stage1::Square(int x, int y, int color, Puyo piece)
+bool Stage1::Square(int x, int y, int color, Puyo* piece)
 {
 	if (y <= 2) {
 		App->fade->FadeToBlack((Module*)App->stage1, (Module*)App->sceneIntro, 90);
@@ -84,11 +119,9 @@ bool Stage1::Square(int x, int y, int color, Puyo piece)
 	else {
 		if (grid[x][y].color == EMPTY_SPACE)
 		{
-			piece.pos.x = x * 16;
-			piece.pos.y = y * 16;
 			App->audio->PlayFx(place, 0);
 			grid[x][y].color = color;
-			grid[x][y].pointer = &piece;
+			grid[x][y].pointer = piece;
 			DeleteMatching(color);
 			FallAgain();
 			willFall.empty();
@@ -148,7 +181,8 @@ bool Stage1::DeleteMatching(int color) {
 					willFall.push_back(grid[i][j - 1].pointer);
 				};
 
-				//delete grid[i][j].pointer;
+				delete bombermans[0];
+				bombermans[0] = nullptr;
 
 				grid[i - 1][j].pointer = nullptr;
 				grid[i + 1][j].pointer = nullptr;
@@ -187,6 +221,15 @@ bool Stage1::FallAgain()
 
 bool Stage1::CleanUp()
 {
+
+	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
+	{
+		if (bombermans[i] != nullptr)
+		{
+			delete bombermans[i];
+			bombermans[i] = nullptr;
+		}
+	}
 	for (int i = 0; i < COLUMNS; i++)
 	{
 		for (int j = 0; j < ROWS; j++)
@@ -195,7 +238,52 @@ bool Stage1::CleanUp()
 		}
 	}
 	score = 0;
-	App->Groups->Disable();
+	App->textures->CleanUp();
 	App->stage1->Disable();
 	return true;
+}
+bool Stage1::AddEnemy(int x, int y)
+{
+	bool ret = false;
+
+	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
+	{
+		{
+			spawnQueue[i].x = x;
+			spawnQueue[i].y = y;
+			ret = true;
+			break;
+		}
+	}
+
+	return ret;
+}
+
+void Stage1::HandleEnemiesSpawn()
+{
+	// Iterate all the enemies queue
+	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
+	{
+		if (bombermans[i] == nullptr)
+		{
+			SpawnBomberman(spawnQueue[i]);
+		}
+	}
+}
+
+void Stage1::SpawnBomberman(const Spawnpoint& info)
+{
+	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
+	{
+		if (bombermans[i] == nullptr)
+		{
+			if (bombermans[i] == bombermans[0] || bombermans[i - 1]->block[0].falling == false && bombermans[i - 1]->block[1].falling == false && bombermans[i - 1]->block[2].falling == false)
+			{
+				bombermans[i] = new ModulePieces(true);
+
+				bombermans[i]->textureBomberman = texture;
+			}
+			break;
+		}
+	}
 }
