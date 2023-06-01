@@ -5,7 +5,7 @@
 #include "ModulePieces.h"
 #include "../../Utils/Animation.h"
 
-#define MAX_BOMBERMAN 33
+
 
 struct SDL_Texture;
 

@@ -58,9 +58,9 @@ public:
 public:
 	int hole;
 
-	Puyo block[3];
+	Puyo* block[3] = { nullptr };
 
-	SDL_Texture* textureBomberman = nullptr;
+	SDL_Texture* spritesTexture = nullptr;
 };
 
 #endif //!__MODULE_BOMBERMAN_H__

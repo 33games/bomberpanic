@@ -21,9 +21,10 @@ Stage1::Stage1(bool startEnabled) : Module(startEnabled)
 		for (int j = 0; j < ROWS; j++)
 		{
 			grid[i][j].color = EMPTY_SPACE;
+			grid[i][j].pointer = nullptr;
 		}
 	}
-	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
+	for (uint i = 0; i < MAX_BLOCK; ++i)
 	{
 		bombermans[i] = nullptr;
 
@@ -41,15 +42,14 @@ bool Stage1::Start()
 
 	bool ret = true;
 
+	spritesTexture = App->textures->Load("Assets/Sprites/HeadsAndBombs.png");
+	if (spritesTexture == nullptr) return false;
+
 	bgTexture = App->textures->Load("Assets/Sprites/BattleArena.png");
 	App->audio->PlayMusic("Assets/Music/Stage 1.ogg", 1.0f);
-	place = App->audio->LoadFx("Assets/SFX/place.wav");
-	
+	place = App->audio->LoadFx("Assets/SFX/i.wav");
 
-
-	texture = App->textures->Load("Assets/Sprites/HeadsAndBombs.png");
-
-	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
+	for (uint i = 0; i < MAX_BLOCK; ++i)
 	{
 		if (bombermans[i] != nullptr)
 		{
@@ -73,7 +73,7 @@ Update_Status Stage1::Update()
 	HandleEnemiesSpawn();
 
 
-	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
+	for (uint i = 0; i < MAX_BLOCK; ++i)
 	{
 		if (bombermans[i] != nullptr)
 		{
@@ -98,21 +98,20 @@ Update_Status Stage1::PostUpdate()
 	App->fonts->BlitText(2, 16, scoreFont, scoreText);
 
 
-	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
+	for (uint i = 0; i < MAX_BLOCK; ++i)
 	{
 		if (bombermans[i] != nullptr)
 		{
 			bombermans[i]->PostUpdate();
 		}
-
-
 	}
+
 	return Update_Status::UPDATE_CONTINUE;
 }
 
 bool Stage1::Square(int x, int y, int color, Puyo* piece)
 {
-	if (y <= 2) {
+	if (y == 2) {
 		App->fade->FadeToBlack((Module*)App->stage1, (Module*)App->sceneIntro, 90);
 		return true;
 	}
@@ -171,18 +170,27 @@ bool Stage1::DeleteMatching(int color) {
 			//Horizontal
 			if (grid[i - 1][j].color == color && grid[i + 1][j].color == color && grid[i][j].color == color) {
 
-				if (grid[i - 1][j - 1].pointer != nullptr) {
-					willFall.push_back(grid[i - 1][j - 1].pointer);
-				};
-				if (grid[i + 1][j - 1].pointer != nullptr) {
-					willFall.push_back(grid[i + 1][j - 1].pointer);
-				};
-				if (grid[i][j - 1].pointer != nullptr) {
-					willFall.push_back(grid[i][j - 1].pointer);
-				};
+				//control = false;
 
-				delete bombermans[0];
-				bombermans[0] = nullptr;
+				for (int k = j-1; k > 1; k--) {
+					if (grid[i - 1][k].pointer != nullptr) {
+						willFall.push_back(&grid[i - 1][k]);
+					};
+					if (grid[i + 1][k].pointer != nullptr) {
+						willFall.push_back(&grid[i + 1][k]);
+					};
+					if (grid[i][k].pointer != nullptr) {
+						willFall.push_back(&grid[i][k]);
+					};
+				}
+
+				delete grid[i-1][j].pointer;
+				delete grid[i+1][j].pointer;
+				delete grid[i][j].pointer;
+
+				grid[i-1][j].pointer->currentAnimation = nullptr;
+				grid[i+1][j].pointer->currentAnimation = nullptr;
+				grid[i][j].pointer->currentAnimation = nullptr;
 
 				grid[i - 1][j].pointer = nullptr;
 				grid[i + 1][j].pointer = nullptr;
@@ -192,10 +200,26 @@ bool Stage1::DeleteMatching(int color) {
 				grid[i - 1][j].color = EMPTY_SPACE;
 				grid[i + 1][j].color = EMPTY_SPACE;
 				grid[i][j].color = EMPTY_SPACE;
-
 			}
 			//Vertical
 			if (grid[i][j - 1].color == color && grid[i][j + 1].color == color && grid[i][j].color == color) {
+
+				//control = false;
+
+				for (int k = j - 2; k > 1; k--) {
+					if (grid[i][k].pointer != nullptr) {
+						willFall.push_back(&grid[i][k]);
+					};
+				}
+
+				delete grid[i][j-1].pointer;
+				delete grid[i][j+1].pointer;
+				delete grid[i][j].pointer;
+
+				grid[i][j-1].pointer->currentAnimation = nullptr;
+				grid[i][j+1].pointer->currentAnimation = nullptr;
+				grid[i][j].pointer->currentAnimation = nullptr;
+
 
 				grid[i][j - 1].pointer = nullptr;
 				grid[i][j + 1].pointer = nullptr;
@@ -205,6 +229,72 @@ bool Stage1::DeleteMatching(int color) {
 				grid[i][j + 1].color = EMPTY_SPACE;
 				grid[i][j].color = EMPTY_SPACE;
 			}
+			//Diagonal UL->BR
+			if (grid[i - 1][j - 1].color == color && grid[i + 1][j + 1].color == color && grid[i][j].color == color) {
+
+
+				for (int k = j - 1; k > 1; k--) {
+					if (grid[i - 1][k-1].pointer != nullptr) {
+						willFall.push_back(&grid[i - 1][k-1]);
+					};
+					if (grid[i + 1][k+1].pointer != nullptr) {
+						willFall.push_back(&grid[i + 1][k+1]);
+					};
+					if (grid[i][k].pointer != nullptr) {
+						willFall.push_back(&grid[i][k]);
+					};
+				}
+
+				delete grid[i - 1][j-1].pointer;
+				delete grid[i + 1][j+1].pointer;
+				delete grid[i][j].pointer;
+
+				grid[i - 1][j-1].pointer->currentAnimation = nullptr;
+				grid[i + 1][j+1].pointer->currentAnimation = nullptr;
+				grid[i][j].pointer->currentAnimation = nullptr;
+
+				grid[i - 1][j-1].pointer = nullptr;
+				grid[i + 1][j+1].pointer = nullptr;
+				grid[i][j].pointer = nullptr;
+
+
+				grid[i - 1][j-1].color = EMPTY_SPACE;
+				grid[i + 1][j+1].color = EMPTY_SPACE;
+				grid[i][j].color = EMPTY_SPACE;
+			}
+			//Diagonal BL->UR
+			if (grid[i - 1][j + 1].color == color && grid[i + 1][j - 1].color == color && grid[i][j].color == color) {
+
+
+				for (int k = j - 1; k > 1; k--) {
+					if (grid[i - 1][k + 1].pointer != nullptr) {
+						willFall.push_back(&grid[i - 1][k + 1]);
+					};
+					if (grid[i + 1][k - 1].pointer != nullptr) {
+						willFall.push_back(&grid[i + 1][k - 1]);
+					};
+					if (grid[i][k].pointer != nullptr) {
+						willFall.push_back(&grid[i][k]);
+					};
+				}
+
+				delete grid[i - 1][j + 1].pointer;
+				delete grid[i + 1][j - 1].pointer;
+				delete grid[i][j].pointer;
+
+				grid[i - 1][j + 1].pointer->currentAnimation = nullptr;
+				grid[i + 1][j - 1].pointer->currentAnimation = nullptr;
+				grid[i][j].pointer->currentAnimation = nullptr;
+
+				grid[i - 1][j + 1].pointer = nullptr;
+				grid[i + 1][j - 1].pointer = nullptr;
+				grid[i][j].pointer = nullptr;
+
+
+				grid[i - 1][j + 1].color = EMPTY_SPACE;
+				grid[i + 1][j - 1].color = EMPTY_SPACE;
+				grid[i][j].color = EMPTY_SPACE;
+			}
 		}
 	}
 	return true;
@@ -212,9 +302,12 @@ bool Stage1::DeleteMatching(int color) {
 
 bool Stage1::FallAgain()
 {
-	for (Puyo* p : willFall) {
-		p->falling = true;
-		p = nullptr;
+	for (tile* p : willFall) {
+		if (p->pointer != nullptr) {
+			p->color = EMPTY_SPACE;
+			p->pointer->falling = true;
+			p = nullptr;
+		}
 	}
 	return true;
 }
@@ -222,7 +315,7 @@ bool Stage1::FallAgain()
 bool Stage1::CleanUp()
 {
 
-	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
+	for (uint i = 0; i < MAX_BLOCK; ++i)
 	{
 		if (bombermans[i] != nullptr)
 		{
@@ -235,6 +328,7 @@ bool Stage1::CleanUp()
 		for (int j = 0; j < ROWS; j++)
 		{
 			grid[i][j].color = EMPTY_SPACE;
+			grid[i][j].pointer = nullptr;
 		}
 	}
 	score = 0;
@@ -277,11 +371,11 @@ void Stage1::SpawnBomberman(const Spawnpoint& info)
 	{
 		if (bombermans[i] == nullptr)
 		{
-			if (bombermans[i] == bombermans[0] || bombermans[i - 1]->block[0].falling == false && bombermans[i - 1]->block[1].falling == false && bombermans[i - 1]->block[2].falling == false)
+			if (bombermans[i] == bombermans[0] || (bombermans[i-1]->block[0]->falling == false && bombermans[i-1]->block[1]->falling == false && bombermans[i-1]->block[2]->falling == false))
 			{
 				bombermans[i] = new ModulePieces(true);
 
-				bombermans[i]->textureBomberman = texture;
+				bombermans[i]->spritesTexture = spritesTexture;
 			}
 			break;
 		}

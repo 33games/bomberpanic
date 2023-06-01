@@ -4,9 +4,10 @@
 #include "../Module.h"
 #include "../../Utils/Animation.h"
 #include "./ModulePieces.h"
-#include "ModuleGroups.h"
 #include <list>
 
+#define MAX_BOMBERMAN 333
+#define MAX_BLOCK 500
 #define WINNING_SCORE 50000
 #define COLUMNS 10
 #define ROWS 14
@@ -48,13 +49,7 @@ public:
 
 	bool AddEnemy(int x, int y);
 
-	SDL_Texture* texture = nullptr;
-
-	Animation* currentAnimation = nullptr;
-
 	void SpawnBomberman(const Spawnpoint& info);
-
-	ModulePieces* bombermans[MAX_BOMBERMAN] = { nullptr };
 
 	void Spawn(int x, int y, int value);
 
@@ -69,13 +64,15 @@ public:
 public:
 	tile grid[COLUMNS][ROWS];
 
-	std::list<Puyo*> willFall;
+	std::list<tile*> willFall;
 
 	//Puyo* willFall[MAX_BOMBERMAN];
 
+	bool control = true;
+
 	int score = 0;
 
-	int first = 0;
+	int turn = 0;
 
 	uint place;
 
@@ -84,14 +81,18 @@ public:
 	int scoreFont = -1;
 
 	SDL_Texture* bgTexture = nullptr;
-	
+
+	SDL_Texture* texture = nullptr;
+
+	Animation* currentAnimation = nullptr;
 	
 	SDL_Texture* starsTexture = nullptr;
-
 	
 	SDL_Texture* spritesTexture = nullptr;
 
-	Spawnpoint spawnQueue[MAX_BOMBERMAN];
+	ModulePieces* bombermans[MAX_BLOCK] = { nullptr };
+
+	Spawnpoint spawnQueue[MAX_BLOCK];
 };
 
 #endif
