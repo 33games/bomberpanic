@@ -62,6 +62,8 @@ bool Stage1::Start()
 	char lookupTable[] = { "! @,_./0123456789$;< ?abcdefghijklmnopqrstuvwxyz" };
 	scoreFont = App->fonts->Load("Assets/Fonts/rtype_font3.png", lookupTable, 2);
 
+	stop = false;
+
 	return ret;
 }
 
@@ -185,6 +187,8 @@ bool Stage1::DeleteMatching(int color) {
 
 				control = false;
 
+				score += 500;
+
 				for (int k = j-1; k > 1; k--) {
 					if (grid[i - 1][k].pointer != nullptr) {
 						willFall.push_back(&grid[i - 1][k]);
@@ -196,13 +200,12 @@ bool Stage1::DeleteMatching(int color) {
 						willFall.push_back(&grid[i][k]);
 					};
 				}
-
-				delete grid[i-1][j].pointer;
-				delete grid[i+1][j].pointer;
+				delete grid[i - 1][j].pointer;
+				delete grid[i + 1][j].pointer;
 				delete grid[i][j].pointer;
 
-				grid[i-1][j].pointer->currentAnimation = nullptr;
-				grid[i+1][j].pointer->currentAnimation = nullptr;
+				grid[i - 1][j].pointer->currentAnimation = nullptr;
+				grid[i + 1][j].pointer->currentAnimation = nullptr;
 				grid[i][j].pointer->currentAnimation = nullptr;
 
 				grid[i - 1][j].pointer = nullptr;
@@ -213,18 +216,21 @@ bool Stage1::DeleteMatching(int color) {
 				grid[i - 1][j].color = EMPTY_SPACE;
 				grid[i + 1][j].color = EMPTY_SPACE;
 				grid[i][j].color = EMPTY_SPACE;
+
+				deleted = true;
 			}
 			//Vertical
 			if (grid[i][j - 1].color == color && grid[i][j + 1].color == color && grid[i][j].color == color) {
 
 				control = false;
 
+				score += 500;
+
 				for (int k = j - 2; k > 1; k--) {
 					if (grid[i][k].pointer != nullptr) {
 						willFall.push_back(&grid[i][k]);
 					};
 				}
-
 				delete grid[i][j-1].pointer;
 				delete grid[i][j+1].pointer;
 				delete grid[i][j].pointer;
@@ -241,11 +247,15 @@ bool Stage1::DeleteMatching(int color) {
 				grid[i][j - 1].color = EMPTY_SPACE;
 				grid[i][j + 1].color = EMPTY_SPACE;
 				grid[i][j].color = EMPTY_SPACE;
+
+				deleted = true;
 			}
 			//Diagonal UL->BR
 			if (grid[i - 1][j - 1].color == color && grid[i + 1][j + 1].color == color && grid[i][j].color == color) {
 
 				control = false;
+
+				score += 500;
 
 				for (int k = j - 1; k > 1; k--) {
 					if (grid[i - 1][k-1].pointer != nullptr) {
@@ -275,11 +285,15 @@ bool Stage1::DeleteMatching(int color) {
 				grid[i - 1][j-1].color = EMPTY_SPACE;
 				grid[i + 1][j+1].color = EMPTY_SPACE;
 				grid[i][j].color = EMPTY_SPACE;
+
+				deleted = true;
 			}
 			//Diagonal BL->UR
 			if (grid[i - 1][j + 1].color == color && grid[i + 1][j - 1].color == color && grid[i][j].color == color) {
 
 				control = false;
+
+				score += 500;
 
 				for (int k = j - 1; k > 1; k--) {
 					if (grid[i - 1][k + 1].pointer != nullptr) {
@@ -309,6 +323,8 @@ bool Stage1::DeleteMatching(int color) {
 				grid[i - 1][j + 1].color = EMPTY_SPACE;
 				grid[i + 1][j - 1].color = EMPTY_SPACE;
 				grid[i][j].color = EMPTY_SPACE;
+
+				deleted = true;
 			}
 		}
 	}
@@ -392,7 +408,7 @@ void Stage1::SpawnBomberman(const Spawnpoint& info)
 	{
 		if (bombermans[i] == nullptr && !stop)
 		{
-			if (bombermans[i] == bombermans[0] || (bombermans[i-1]->block[0]->falling == false && bombermans[i-1]->block[1]->falling == false && bombermans[i-1]->block[2]->falling == false))
+			if (bombermans[i] == bombermans[0] || (bombermans[i-1]->block[0]->falling == false && bombermans[i-1]->block[1]->falling == false && bombermans[i-1]->block[2]->falling == false) || deleted == true)
 			{
 				bombermans[i] = new ModulePieces(true);
 
@@ -400,6 +416,10 @@ void Stage1::SpawnBomberman(const Spawnpoint& info)
 
 				if (!control) {
 					control = true;
+				}
+
+				if (deleted) {
+					deleted = false;
 				}
 			}
 			break;

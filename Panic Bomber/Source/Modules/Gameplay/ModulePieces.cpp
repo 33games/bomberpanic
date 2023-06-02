@@ -180,6 +180,7 @@ bool ModulePieces::Start()
 {	
 	Stage1* Stage1 = App->stage1;
 
+	spawned = true;
 
 	return true;
 }
@@ -195,7 +196,12 @@ Update_Status ModulePieces::Update()
 			if (block[i]->currentAnimation != nullptr) {
 				block[i]->currentAnimation->Update();
 			}
-			if (App->stage1->DownOpen(block[i]->pos.x / 16, block[i]->pos.y / 16) && block[i]->falling == true) {
+			if (spawned) {
+				block[i]->falling = true;
+				block[i]->active = true;
+				block[i]->speed = 0.2;
+			}
+			if (App->stage1->DownOpen(block[i]->pos.x / 16, block[i]->pos.y / 16)) {
 				block[i]->pos.y += block[i]->speed;
 			}
 			else {
@@ -212,6 +218,7 @@ Update_Status ModulePieces::Update()
 		}
 	}
 	if ((block[0]->active && block[1]->active && block[2]->active) && App->stage1->control == true) {
+		spawned = false;
 		if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_DOWN || pad.left == KEY_STATE::KEY_DOWN /*|| pad.l_x<-0.5f */) {
 			if (App->stage1->LeftOpen(block[0]->pos.x / 16, block[0]->pos.y / 16) && App->stage1->LeftOpen(block[1]->pos.x / 16, block[1]->pos.y / 16) && App->stage1->LeftOpen(block[2]->pos.x / 16, block[2]->pos.y / 16)) {
 				block[0]->pos.x -= 16;
@@ -231,6 +238,7 @@ Update_Status ModulePieces::Update()
 				block[0]->speed = 1.5;
 				block[1]->speed = 1.5;
 				block[2]->speed = 1.5;
+				App->stage1->score += 1;
 			}
 		}
 		else {

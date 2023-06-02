@@ -60,6 +60,8 @@ public:
 
 	Puyo* block[3] = { nullptr };
 
+	bool spawned = true;
+
 	SDL_Texture* spritesTexture = nullptr;
 };
 

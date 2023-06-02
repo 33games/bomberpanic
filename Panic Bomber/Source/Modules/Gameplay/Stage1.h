@@ -69,7 +69,7 @@ public:
 
 	bool control = true;
 
-	bool stop = false;
+	bool stop, deleted = false;
 
 	int score = 0;
 
