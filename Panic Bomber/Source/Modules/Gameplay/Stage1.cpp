@@ -85,7 +85,6 @@ Update_Status Stage1::Update()
 	}
 
 	if (this->score >= WINNING_SCORE) {
-		
 		endTexture_player1 = App->textures->Load("Assets/Sprites/winScreen.png");
 		endTexture_player2 = App->textures->Load("Assets/Sprites/loseScreen.png");
 		App->fade->FadeToBlack((Module*)App->stage1, (Module*)App->sceneIntro, 200);
@@ -420,6 +419,14 @@ void Stage1::SpawnBomberman(const Spawnpoint& info)
 
 				if (deleted) {
 					deleted = false;
+				}
+
+				if (counter == 4) {
+					counter = 1;
+					lit = !lit;
+				}
+				else {
+					counter++;
 				}
 			}
 			break;

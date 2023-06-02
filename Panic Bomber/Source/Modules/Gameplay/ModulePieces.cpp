@@ -14,159 +14,189 @@
 
 ModulePieces::ModulePieces(bool startEnabled) : Module(startEnabled)
 {
-	for (int i = 0; i < 3; i++) {
-		block[i] = new Puyo;
+	if (App->stage1->counter == 3) {
+		for (int i = 0; i < 3; i++) {
+			block[i] = new Puyo;
+		}
+		if (!App->stage1->lit) {
+			block[0]->color = BOMB;
+			block[0]->pos.x = 80;
+			block[0]->pos.y = 32;
+			block[0]->animationBomberman.PushBack({ 0, 80, 16, 16 });
+			block[0]->animationBomberman.PushBack({ 16, 80, 16, 16 });
+			block[0]->animationBomberman.PushBack({ 32, 80, 16, 16 });
+			block[0]->animationBomberman.PushBack({ 16, 80, 16, 16 });
+			block[0]->animationBomberman.speed = 0.10f;
+			block[0]->currentAnimation = &block[0]->animationBomberman;
+			block[1]->active = false;
+			block[2]->active = false;
+		}
+		else {
+			block[0]->color = PRIMED_BOMB;
+			block[0]->pos.x = 80;
+			block[0]->pos.y = 32;
+			block[0]->animationBomberman.PushBack({ 48, 80, 16, 16 });
+			block[0]->animationBomberman.speed = 0.10f;
+			block[0]->currentAnimation = &block[0]->animationBomberman;
+			block[1]->active = false;
+			block[2]->active = false;
+		}
 	}
-	hole = rand() % POSITIONS-1;
-	switch (hole)
-	{
-	case UPPER_LEFT:
-		//Upper-left
-		block[0]->color = rand() % 5;
-		block[0]->pos.x = 80;
-		block[0]->pos.y = 16;
+	else {
+		for (int i = 0; i < 3; i++) {
+			block[i] = new Puyo;
+		}
+		hole = rand() % POSITIONS - 1;
+		switch (hole)
+		{
+		case UPPER_LEFT:
+			//Upper-left
+			block[0]->color = rand() % 5;
+			block[0]->pos.x = 80;
+			block[0]->pos.y = 16;
 
-		block[1]->color = rand() % 5;
-		block[1]->pos.x = 80;
-		block[1]->pos.y = 32;
+			block[1]->color = rand() % 5;
+			block[1]->pos.x = 80;
+			block[1]->pos.y = 32;
 
-		block[2]->color = rand() % 5;
-		block[2]->pos.x = 64;
-		block[2]->pos.y = 32;
-		break;
-	case UPPER_RIGHT:
-		//Upper-right
-		block[0]->color = rand() % 5;
-		block[0]->pos.x = 80;
-		block[0]->pos.y = 32;
-
-		block[1]->color = rand() % 5;
-		block[1]->pos.x = 64;
-		block[1]->pos.y = 32;
-
-		block[2]->color = rand() % 5;
-		block[2]->pos.x = 64;
-		block[2]->pos.y = 16;
-		break;
-	case BOTTOM_RIGHT:
-		//Bottom-right
-		block[0]->color = rand() % 5;
-		block[0]->pos.x = 64;
-		block[0]->pos.y = 32;
-
-		block[1]->color = rand() % 5;
-		block[1]->pos.x = 64;
-		block[1]->pos.y = 16;
-
-		block[2]->color = rand() % 5;
-		block[2]->pos.x = 80;
-		block[2]->pos.y = 16;
-		break;
-	case BOTTOM_LEFT:
-		//Bottom-left
-		block[0]->color = rand() % 5;
-		block[0]->pos.x = 64;
-		block[0]->pos.y = 16;
-
-		block[1]->color = rand() % 5;
-		block[1]->pos.x = 80;
-		block[1]->pos.y = 16;
-
-		block[2]->color = rand() % 5;
-		block[2]->pos.x = 80;
-		block[2]->pos.y = 32;
-		break;
-	}
-
-	for (int i = 0; i < 3; i++) {
-		
-		switch (block[i]->color) {
-		case BOMBERMAN_BLACK:
-			//Black Bomberman
-			block[i]->animationBomberman.PushBack({ 0, 0, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 16, 0, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 32, 0, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 48, 0, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 64, 0, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 80, 0, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 96, 0, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 112, 0, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 128, 0, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 144, 0, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 160, 0, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 176, 0, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 192, 0, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0, 0, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0, 0, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0, 0, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0, 0, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0, 0, 16, 16 });
-			block[i]->animationBomberman.speed = 0.10f;
-			block[i]->currentAnimation = &block[i]->animationBomberman;
+			block[2]->color = rand() % 5;
+			block[2]->pos.x = 64;
+			block[2]->pos.y = 32;
 			break;
-		case BOMBERMAN_WHITE:
-			//White Bomberman
-			block[i]->animationBomberman.PushBack({ 0, 16, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 16, 16, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 32, 16, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 48, 16, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 64, 16, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 80, 16, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 96, 16, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 112, 16, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 128, 16, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0, 16, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0, 16, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0, 16, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0, 16, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0, 16, 16, 16 });
-			block[i]->animationBomberman.speed = 0.10f;
-			block[i]->currentAnimation = &block[i]->animationBomberman;
+		case UPPER_RIGHT:
+			//Upper-right
+			block[0]->color = rand() % 5;
+			block[0]->pos.x = 80;
+			block[0]->pos.y = 32;
+
+			block[1]->color = rand() % 5;
+			block[1]->pos.x = 64;
+			block[1]->pos.y = 32;
+
+			block[2]->color = rand() % 5;
+			block[2]->pos.x = 64;
+			block[2]->pos.y = 16;
 			break;
-		case BOMBERMAN_RED:
-			//Red Bomberman
-			block[i]->animationBomberman.PushBack({ 0, 32, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 16, 32, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 32, 32, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 48, 32, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 64, 32, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 80, 32, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 96, 32, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 112, 32, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 128, 32, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0, 32, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0, 32, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0, 32, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0, 32, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0, 32, 16, 16 });
-			block[i]->animationBomberman.speed = 0.10f;
-			block[i]->currentAnimation = &block[i]->animationBomberman;
+		case BOTTOM_RIGHT:
+			//Bottom-right
+			block[0]->color = rand() % 5;
+			block[0]->pos.x = 64;
+			block[0]->pos.y = 32;
+
+			block[1]->color = rand() % 5;
+			block[1]->pos.x = 64;
+			block[1]->pos.y = 16;
+
+			block[2]->color = rand() % 5;
+			block[2]->pos.x = 80;
+			block[2]->pos.y = 16;
 			break;
-		case BOMBERMAN_BLUE:
-			//Blue Bomberman
-			block[i]->animationBomberman.PushBack({ 0, 48, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 16, 48, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 32, 48, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0, 48, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0, 48, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0, 48, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0, 48, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0, 48, 16, 16 });
-			block[i]->animationBomberman.speed = 0.10f;
-			block[i]->currentAnimation = &block[i]->animationBomberman;
+		case BOTTOM_LEFT:
+			//Bottom-left
+			block[0]->color = rand() % 5;
+			block[0]->pos.x = 64;
+			block[0]->pos.y = 16;
+
+			block[1]->color = rand() % 5;
+			block[1]->pos.x = 80;
+			block[1]->pos.y = 16;
+
+			block[2]->color = rand() % 5;
+			block[2]->pos.x = 80;
+			block[2]->pos.y = 32;
 			break;
-		case BOMBERMAN_GREEN:
-			//Green Bomberman
-			block[i]->animationBomberman.PushBack({ 0,  64, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 16, 64, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 16, 64, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0,  64, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0,  64, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0,  64, 16, 16 });
-			block[i]->animationBomberman.PushBack({ 0,  64, 16, 16 });
-			block[i]->animationBomberman.speed = 0.10f;
-			block[i]->currentAnimation = &block[i]->animationBomberman;
-			break;
+		}
+
+		for (int i = 0; i < 3; i++) {
+
+			switch (block[i]->color) {
+			case BOMBERMAN_BLACK:
+				//Black Bomberman
+				block[i]->animationBomberman.PushBack({ 0, 0, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 16, 0, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 32, 0, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 48, 0, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 64, 0, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 80, 0, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 96, 0, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 112, 0, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 128, 0, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 144, 0, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 160, 0, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 176, 0, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 192, 0, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0, 0, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0, 0, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0, 0, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0, 0, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0, 0, 16, 16 });
+				block[i]->animationBomberman.speed = 0.10f;
+				block[i]->currentAnimation = &block[i]->animationBomberman;
+				break;
+			case BOMBERMAN_WHITE:
+				//White Bomberman
+				block[i]->animationBomberman.PushBack({ 0, 16, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 16, 16, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 32, 16, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 48, 16, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 64, 16, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 80, 16, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 96, 16, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 112, 16, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 128, 16, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0, 16, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0, 16, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0, 16, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0, 16, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0, 16, 16, 16 });
+				block[i]->animationBomberman.speed = 0.10f;
+				block[i]->currentAnimation = &block[i]->animationBomberman;
+				break;
+			case BOMBERMAN_RED:
+				//Red Bomberman
+				block[i]->animationBomberman.PushBack({ 0, 32, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 16, 32, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 32, 32, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 48, 32, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 64, 32, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 80, 32, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 96, 32, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 112, 32, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 128, 32, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0, 32, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0, 32, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0, 32, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0, 32, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0, 32, 16, 16 });
+				block[i]->animationBomberman.speed = 0.10f;
+				block[i]->currentAnimation = &block[i]->animationBomberman;
+				break;
+			case BOMBERMAN_BLUE:
+				//Blue Bomberman
+				block[i]->animationBomberman.PushBack({ 0, 48, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 16, 48, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 32, 48, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0, 48, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0, 48, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0, 48, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0, 48, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0, 48, 16, 16 });
+				block[i]->animationBomberman.speed = 0.10f;
+				block[i]->currentAnimation = &block[i]->animationBomberman;
+				break;
+			case BOMBERMAN_GREEN:
+				//Green Bomberman
+				block[i]->animationBomberman.PushBack({ 0,  64, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 16, 64, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 16, 64, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0,  64, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0,  64, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0,  64, 16, 16 });
+				block[i]->animationBomberman.PushBack({ 0,  64, 16, 16 });
+				block[i]->animationBomberman.speed = 0.10f;
+				block[i]->currentAnimation = &block[i]->animationBomberman;
+				break;
+			}
 		}
 	}
 }
@@ -190,50 +220,64 @@ Update_Status ModulePieces::Update()
 	KEY_STATE* keys = App->input->keys;
 
 	GamePad& pad = App->input->pads[0];
-
 	for (int i = 0; i < 3; i++) {
-		if (App->stage1->bombermans[0] != nullptr) {
-			if (block[i]->currentAnimation != nullptr) {
-				block[i]->currentAnimation->Update();
-			}
-			if (spawned) {
-				block[i]->falling = true;
-				block[i]->active = true;
-				block[i]->speed = 0.2;
-			}
-			if (App->stage1->DownOpen(block[i]->pos.x / 16, block[i]->pos.y / 16)) {
-				block[i]->pos.y += block[i]->speed;
-			}
-			else {
-				block[i]->falling = false;
-				block[0]->speed = 1.5;
-				block[1]->speed = 1.5;
-				block[2]->speed = 1.5;
-				block[0]->active = false;
-				block[1]->active = false;
-				block[2]->active = false;
-				block[i]->pos.y = round(block[i]->pos.y / 16) * 16;
-				App->stage1->Square(block[i]->pos.x / 16, block[i]->pos.y / 16, block[i]->color, block[i]);
-			}
+		if (block[i]->currentAnimation != nullptr) {
+			block[i]->currentAnimation->Update();
+		}
+		if (App->stage1->DownOpen(block[i]->pos.x / 16, block[i]->pos.y / 16)) {
+			block[i]->pos.y += block[i]->speed;
+		}
+		else {
+			block[i]->falling = false;
+			block[0]->speed = 1.5;
+			block[1]->speed = 1.5;
+			block[2]->speed = 1.5;
+			block[0]->active = false;
+			block[1]->active = false;
+			block[2]->active = false;
+			block[i]->pos.y = round(block[i]->pos.y / 16) * 16;
+			App->stage1->Square(block[i]->pos.x / 16, block[i]->pos.y / 16, block[i]->color, block[i]);
 		}
 	}
-	if ((block[0]->active && block[1]->active && block[2]->active) && App->stage1->control == true) {
+	if (App->stage1->counter == 4) {
+		if (block[0]->active) {
+			if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_DOWN || pad.left == KEY_STATE::KEY_DOWN) {
+				if (App->stage1->LeftOpen(block[0]->pos.x / 16, block[0]->pos.y / 16)) {
+					block[0]->pos.x -= 16;
+				}
+			}
+			if (keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_DOWN || pad.right == KEY_STATE::KEY_DOWN) {
+				if (App->stage1->RightOpen(block[0]->pos.x / 16, block[0]->pos.y / 16)) {
+					block[0]->pos.x += 16;
+				}
+			}
+			if (keys[SDL_Scancode::SDL_SCANCODE_S] == KEY_STATE::KEY_REPEAT || pad.down == KEY_STATE::KEY_DOWN) {
+				if (App->stage1->DownOpen(block[0]->pos.x / 16, block[0]->pos.y / 16)) {
+					block[0]->speed = 1.5;
+					App->stage1->score += 1;
+				}
+			}
+			else {
+				block[0]->speed = 0.2;
+			}
+		}
+	} else if ((block[0]->active && block[1]->active && block[2]->active) && App->stage1->control == true) {
 		spawned = false;
-		if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_DOWN || pad.left == KEY_STATE::KEY_DOWN /*|| pad.l_x<-0.5f */) {
+		if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_DOWN || pad.left == KEY_STATE::KEY_DOWN) {
 			if (App->stage1->LeftOpen(block[0]->pos.x / 16, block[0]->pos.y / 16) && App->stage1->LeftOpen(block[1]->pos.x / 16, block[1]->pos.y / 16) && App->stage1->LeftOpen(block[2]->pos.x / 16, block[2]->pos.y / 16)) {
 				block[0]->pos.x -= 16;
 				block[1]->pos.x -= 16;
 				block[2]->pos.x -= 16;
 			}
 		}
-		if (keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_DOWN || pad.right == KEY_STATE::KEY_DOWN /* || pad.l_x>0.5f */) {
+		if (keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_DOWN || pad.right == KEY_STATE::KEY_DOWN) {
 			if (App->stage1->RightOpen(block[0]->pos.x / 16, block[0]->pos.y / 16) && App->stage1->RightOpen(block[1]->pos.x / 16, block[1]->pos.y / 16) && App->stage1->RightOpen(block[2]->pos.x / 16, block[2]->pos.y / 16)) {
 				block[0]->pos.x += 16;
 				block[1]->pos.x += 16;
 				block[2]->pos.x += 16;
 			}
 		}
-		if (keys[SDL_Scancode::SDL_SCANCODE_S] == KEY_STATE::KEY_REPEAT || pad.down == KEY_STATE::KEY_DOWN /* || pad.l_y>0.5f */) {
+		if (keys[SDL_Scancode::SDL_SCANCODE_S] == KEY_STATE::KEY_REPEAT || pad.down == KEY_STATE::KEY_DOWN) {
 			if (App->stage1->DownOpen(block[0]->pos.x / 16, block[0]->pos.y / 16) && App->stage1->DownOpen(block[1]->pos.x / 16, block[1]->pos.y / 16) && App->stage1->DownOpen(block[2]->pos.x / 16, block[2]->pos.y / 16)) {
 				block[0]->speed = 1.5;
 				block[1]->speed = 1.5;

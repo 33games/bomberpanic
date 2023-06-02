@@ -69,11 +69,11 @@ public:
 
 	bool control = true;
 
-	bool stop, deleted = false;
+	bool stop, deleted, lit = false;
 
 	int score = 0;
 
-	int turn = 0;
+	int counter = 0;
 
 	uint place;
 

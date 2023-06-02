@@ -22,8 +22,9 @@ enum Bomberman_Color {
 	BOMBERMAN_RED = 2,
 	BOMBERMAN_BLUE = 3,
 	BOMBERMAN_GREEN = 4,
+	BOMB = 5,
+	PRIMED_BOMB = 6,
 	EMPTY_SPACE = 9,
-	DELETING = 1,
 };
 struct SDL_Texture;
 
