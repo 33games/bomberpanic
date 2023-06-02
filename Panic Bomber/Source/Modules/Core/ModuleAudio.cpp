@@ -114,7 +114,7 @@ bool ModuleAudio::PlayMusic(const char* path, float fade_time)
 	}
 
 	LOG("Successfully playing %s", path);
-	Mix_VolumeMusic(60);
+	Mix_VolumeMusic(10);
 	return ret;
 }
 

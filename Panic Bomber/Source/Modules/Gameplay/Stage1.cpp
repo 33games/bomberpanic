@@ -83,7 +83,10 @@ Update_Status Stage1::Update()
 	}
 
 	if (this->score >= WINNING_SCORE) {
-		App->fade->FadeToBlack((Module*)App->stage1, (Module*)App->sceneIntro, 90);
+		
+		endTexture_player1 = App->textures->Load("Assets/Sprites/winScreen.png");
+		endTexture_player2 = App->textures->Load("Assets/Sprites/loseScreen.png");
+		App->fade->FadeToBlack((Module*)App->stage1, (Module*)App->sceneIntro, 200);
 	}
 
 	return Update_Status::UPDATE_CONTINUE;
@@ -92,9 +95,11 @@ Update_Status Stage1::Update()
 
 Update_Status Stage1::PostUpdate()
 {
-	
 	App->render->Blit(bgTexture, 0, 0, NULL);
+	App->render->Blit(endTexture_player1, 40, 56, NULL);
+	App->render->Blit(endTexture_player2, 188, 56, NULL);
 	sprintf_s(scoreText, 10, "%7d", score);
+
 	if (scoreFont != NULL) {
 		App->fonts->BlitText(2, 16, scoreFont, scoreText);
 	}
@@ -113,12 +118,17 @@ Update_Status Stage1::PostUpdate()
 
 bool Stage1::Square(int x, int y, int color, Puyo* piece)
 {
-	if (y == 2) {
-		App->fade->FadeToBlack((Module*)App->stage1, (Module*)App->sceneIntro, 90);
+	if (y == 2) 
+	{
+		endTexture_player1 = App->textures->Load("Assets/Sprites/loseScreen.png");
+		endTexture_player2 = App->textures->Load("Assets/Sprites/winScreen.png");
+
+		App->fade->FadeToBlack((Module*)App->stage1, (Module*)App->sceneIntro, 200);
 		stop = true;
 		return true;
 	}
-	else {
+	else 
+	{
 		if (grid[x][y].color == EMPTY_SPACE)
 		{
 			App->audio->PlayFx(place, 0);
@@ -339,6 +349,12 @@ bool Stage1::CleanUp()
 	score = 0;
 	App->textures->CleanUp();
 	App->stage1->Disable();
+
+	if (endTexture_player1 != nullptr)
+		endTexture_player1 = nullptr;
+	if (endTexture_player2 != nullptr)
+		endTexture_player2 = nullptr;
+
 	return true;
 }
 bool Stage1::AddEnemy(int x, int y)

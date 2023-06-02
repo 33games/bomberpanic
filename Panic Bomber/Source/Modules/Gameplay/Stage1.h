@@ -7,7 +7,7 @@
 #include <list>
 
 #define MAX_BOMBERMAN 333
-#define WINNING_SCORE 50000
+#define WINNING_SCORE 5000
 #define COLUMNS 10
 #define ROWS 14
 
@@ -82,6 +82,9 @@ public:
 	int scoreFont;
 
 	SDL_Texture* bgTexture = nullptr;
+
+	SDL_Texture* endTexture_player1 = nullptr;
+	SDL_Texture* endTexture_player2 = nullptr;
 
 	SDL_Texture* texture = nullptr;
 
