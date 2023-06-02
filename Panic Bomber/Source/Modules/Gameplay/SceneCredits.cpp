@@ -59,9 +59,9 @@ Update_Status SceneCredits::PostUpdate()
 	App->fonts->BlitText(5, 120, scoreFont, "project 1");
 	App->fonts->BlitText(5, 130, scoreFont, "videogame design and development");
 	App->fonts->BlitText(5, 140, scoreFont, "upc _citm_");
-	App->fonts->BlitText(5, 150, scoreFont, "tutor; jesus alonso");
+	App->fonts->BlitText(5, 150, scoreFont, "tutor; jesus alonso alonso");
 	App->fonts->BlitText(5, 170, scoreFont, "los maquinas; pol alvarez,");
-	App->fonts->BlitText(5, 180, scoreFont, "marc vante, pol celaya, ivan molins.");
+	App->fonts->BlitText(5, 180, scoreFont, "marc avante, pol celaya, ivan molins.");
 	App->fonts->BlitText(5, 200, scoreFont, "github.com/33games/bomberpanic/");
 
 	return Update_Status::UPDATE_CONTINUE;

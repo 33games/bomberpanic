@@ -180,6 +180,7 @@ bool ModulePieces::Start()
 {	
 	Stage1* Stage1 = App->stage1;
 
+
 	return true;
 }
 
@@ -210,94 +211,92 @@ Update_Status ModulePieces::Update()
 			}
 		}
 	}
-	if (App->stage1->bombermans[0] != nullptr) {
-		if ((block[0]->active && block[1]->active && block[2]->active) && App->stage1->control == true) {
-			if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_DOWN || pad.left == KEY_STATE::KEY_DOWN /*|| pad.l_x<-0.5f */) {
-				if (App->stage1->LeftOpen(block[0]->pos.x / 16, block[0]->pos.y / 16) && App->stage1->LeftOpen(block[1]->pos.x / 16, block[1]->pos.y / 16) && App->stage1->LeftOpen(block[2]->pos.x / 16, block[2]->pos.y / 16)) {
-					block[0]->pos.x -= 16;
-					block[1]->pos.x -= 16;
-					block[2]->pos.x -= 16;
-				}
-			}
-			if (keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_DOWN || pad.right == KEY_STATE::KEY_DOWN /* || pad.l_x>0.5f */) {
-				if (App->stage1->RightOpen(block[0]->pos.x / 16, block[0]->pos.y / 16) && App->stage1->RightOpen(block[1]->pos.x / 16, block[1]->pos.y / 16) && App->stage1->RightOpen(block[2]->pos.x / 16, block[2]->pos.y / 16)) {
-					block[0]->pos.x += 16;
-					block[1]->pos.x += 16;
-					block[2]->pos.x += 16;
-				}
-			}
-			if (keys[SDL_Scancode::SDL_SCANCODE_S] == KEY_STATE::KEY_REPEAT || pad.down == KEY_STATE::KEY_DOWN /* || pad.l_y>0.5f */) {
-				if (App->stage1->DownOpen(block[0]->pos.x / 16, block[0]->pos.y / 16) && App->stage1->DownOpen(block[1]->pos.x / 16, block[1]->pos.y / 16) && App->stage1->DownOpen(block[2]->pos.x / 16, block[2]->pos.y / 16)) {
-					block[0]->speed = 1.5;
-					block[1]->speed = 1.5;
-					block[2]->speed = 1.5;
-				}
-			}
-			else {
-				block[0]->speed = 0.2;
-				block[1]->speed = 0.2;
-				block[2]->speed = 0.2;
-			}
-			if (keys[SDL_Scancode::SDL_SCANCODE_Q] == KEY_STATE::KEY_DOWN || pad.l1 == KEY_STATE::KEY_DOWN) {
-				switch (hole) {
-				case UPPER_LEFT: //UL
-					block[0]->pos.x -= 16;
-					block[1]->pos.y -= 16;
-					block[2]->pos.x += 16;
-					hole = 3;
-					break;
-				case UPPER_RIGHT: //UR
-					block[0]->pos.y -= 16;
-					block[1]->pos.x += 16;
-					block[2]->pos.y += 16;
-					hole = 0;
-					break;
-				case BOTTOM_RIGHT: //BR
-					block[0]->pos.x += 16;
-					block[1]->pos.y += 16;
-					block[2]->pos.x -= 16;
-					hole = 1;
-					break;
-				case BOTTOM_LEFT: //BL
-					block[0]->pos.y += 16;
-					block[1]->pos.x -= 16;
-					block[2]->pos.y -= 16;
-					hole = 2;
-					break;
-				}
-			}
-			if (keys[SDL_Scancode::SDL_SCANCODE_E] == KEY_STATE::KEY_DOWN || pad.r1 == KEY_STATE::KEY_DOWN) {
-				switch (hole) {
-				case UPPER_LEFT: //UL
-					block[0]->pos.y += 16;
-					block[1]->pos.x -= 16;
-					block[2]->pos.y -= 16;
-					hole = 1;
-					break;
-				case UPPER_RIGHT: //UR
-					block[0]->pos.x -= 16;
-					block[1]->pos.y -= 16;
-					block[2]->pos.x += 16;
-					hole = 2;
-					break;
-				case BOTTOM_RIGHT: //BR
-					block[0]->pos.y -= 16;
-					block[1]->pos.x += 16;
-					block[2]->pos.y += 16;
-					hole = 3;
-					break;
-				case BOTTOM_LEFT: //BL
-					block[0]->pos.x += 16;
-					block[1]->pos.y += 16;
-					block[2]->pos.x -= 16;
-					hole = 0;
-					break;
-				}
+	if ((block[0]->active && block[1]->active && block[2]->active) && App->stage1->control == true) {
+		if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_DOWN || pad.left == KEY_STATE::KEY_DOWN /*|| pad.l_x<-0.5f */) {
+			if (App->stage1->LeftOpen(block[0]->pos.x / 16, block[0]->pos.y / 16) && App->stage1->LeftOpen(block[1]->pos.x / 16, block[1]->pos.y / 16) && App->stage1->LeftOpen(block[2]->pos.x / 16, block[2]->pos.y / 16)) {
+				block[0]->pos.x -= 16;
+				block[1]->pos.x -= 16;
+				block[2]->pos.x -= 16;
 			}
 		}
-		Update_Status ret = Update_Status::UPDATE_CONTINUE;
-		return ret;
+		if (keys[SDL_Scancode::SDL_SCANCODE_D] == KEY_STATE::KEY_DOWN || pad.right == KEY_STATE::KEY_DOWN /* || pad.l_x>0.5f */) {
+			if (App->stage1->RightOpen(block[0]->pos.x / 16, block[0]->pos.y / 16) && App->stage1->RightOpen(block[1]->pos.x / 16, block[1]->pos.y / 16) && App->stage1->RightOpen(block[2]->pos.x / 16, block[2]->pos.y / 16)) {
+				block[0]->pos.x += 16;
+				block[1]->pos.x += 16;
+				block[2]->pos.x += 16;
+			}
+		}
+		if (keys[SDL_Scancode::SDL_SCANCODE_S] == KEY_STATE::KEY_REPEAT || pad.down == KEY_STATE::KEY_DOWN /* || pad.l_y>0.5f */) {
+			if (App->stage1->DownOpen(block[0]->pos.x / 16, block[0]->pos.y / 16) && App->stage1->DownOpen(block[1]->pos.x / 16, block[1]->pos.y / 16) && App->stage1->DownOpen(block[2]->pos.x / 16, block[2]->pos.y / 16)) {
+				block[0]->speed = 1.5;
+				block[1]->speed = 1.5;
+				block[2]->speed = 1.5;
+			}
+		}
+		else {
+			block[0]->speed = 0.2;
+			block[1]->speed = 0.2;
+			block[2]->speed = 0.2;
+		}
+		if (keys[SDL_Scancode::SDL_SCANCODE_Q] == KEY_STATE::KEY_DOWN || pad.l1 == KEY_STATE::KEY_DOWN) {
+			switch (hole) {
+			case UPPER_LEFT: //UL
+				block[0]->pos.x -= 16;
+				block[1]->pos.y -= 16;
+				block[2]->pos.x += 16;
+				hole = 3;
+				break;
+			case UPPER_RIGHT: //UR
+				block[0]->pos.y -= 16;
+				block[1]->pos.x += 16;
+				block[2]->pos.y += 16;
+				hole = 0;
+				break;
+			case BOTTOM_RIGHT: //BR
+				block[0]->pos.x += 16;
+				block[1]->pos.y += 16;
+				block[2]->pos.x -= 16;
+				hole = 1;
+				break;
+			case BOTTOM_LEFT: //BL
+				block[0]->pos.y += 16;
+				block[1]->pos.x -= 16;
+				block[2]->pos.y -= 16;
+				hole = 2;
+				break;
+			}
+		}
+		if (keys[SDL_Scancode::SDL_SCANCODE_E] == KEY_STATE::KEY_DOWN || pad.r1 == KEY_STATE::KEY_DOWN) {
+			switch (hole) {
+			case UPPER_LEFT: //UL
+				block[0]->pos.y += 16;
+				block[1]->pos.x -= 16;
+				block[2]->pos.y -= 16;
+				hole = 1;
+				break;
+			case UPPER_RIGHT: //UR
+				block[0]->pos.x -= 16;
+				block[1]->pos.y -= 16;
+				block[2]->pos.x += 16;
+				hole = 2;
+				break;
+			case BOTTOM_RIGHT: //BR
+				block[0]->pos.y -= 16;
+				block[1]->pos.x += 16;
+				block[2]->pos.y += 16;
+				hole = 3;
+				break;
+			case BOTTOM_LEFT: //BL
+				block[0]->pos.x += 16;
+				block[1]->pos.y += 16;
+				block[2]->pos.x -= 16;
+				hole = 0;
+				break;
+			}
+		}
 	}
+	Update_Status ret = Update_Status::UPDATE_CONTINUE;
+	return ret;
 }
 
 Update_Status ModulePieces::PostUpdate()

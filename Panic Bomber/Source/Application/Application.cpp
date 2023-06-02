@@ -9,7 +9,6 @@
 #include "../Modules/Gameplay/SceneIntro.h"
 #include "../Modules/Core/ModuleRender.h"
 #include "../Modules/Gameplay/ModulePieces.h"
-#include "../Modules/Gameplay/ModuleGroups.h"
 #include "../Modules/Core/ModuleFadeToBlack.h"
 #include "../Modules/Gameplay/SceneCredits.h"
 #include "../Modules/Core/ModuleFonts.h"
@@ -26,7 +25,7 @@ Application::Application()
 	modules[6] = sceneIntro = new SceneIntro(false);
 	modules[7] = stage1 = new Stage1(false);
 
-	modules[8] = fade = new ModuleFadeToBlack(true); //to false
+	modules[8] = fade = new ModuleFadeToBlack(true);
 
 	modules[9] = render = new ModuleRender(true);
 }

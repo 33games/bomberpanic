@@ -7,7 +7,6 @@
 #include <list>
 
 #define MAX_BOMBERMAN 333
-#define MAX_BLOCK 500
 #define WINNING_SCORE 50000
 #define COLUMNS 10
 #define ROWS 14
@@ -70,6 +69,8 @@ public:
 
 	bool control = true;
 
+	bool stop = false;
+
 	int score = 0;
 
 	int turn = 0;
@@ -78,7 +79,7 @@ public:
 
 	char scoreText[10] = { "\0" };
 
-	int scoreFont = -1;
+	int scoreFont;
 
 	SDL_Texture* bgTexture = nullptr;
 
@@ -90,9 +91,9 @@ public:
 	
 	SDL_Texture* spritesTexture = nullptr;
 
-	ModulePieces* bombermans[MAX_BLOCK] = { nullptr };
+	ModulePieces* bombermans[MAX_BOMBERMAN] = { nullptr };
 
-	Spawnpoint spawnQueue[MAX_BLOCK];
+	Spawnpoint spawnQueue[MAX_BOMBERMAN];
 };
 
 #endif

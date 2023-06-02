@@ -7,7 +7,6 @@
 #include "../Core/ModuleAudio.h"
 #include "../Core/ModuleFadetoBlack.h"
 #include "ModulePieces.h"
-#include "ModuleGroups.h"
 #include "../External_Libraries/SDL_image/include/SDL_image.h"
 #include "../Core/ModuleFonts.h"
 #include <string>
@@ -24,7 +23,7 @@ Stage1::Stage1(bool startEnabled) : Module(startEnabled)
 			grid[i][j].pointer = nullptr;
 		}
 	}
-	for (uint i = 0; i < MAX_BLOCK; ++i)
+	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
 	{
 		bombermans[i] = nullptr;
 
@@ -49,7 +48,7 @@ bool Stage1::Start()
 	App->audio->PlayMusic("Assets/Music/Stage 1.ogg", 1.0f);
 	place = App->audio->LoadFx("Assets/SFX/i.wav");
 
-	for (uint i = 0; i < MAX_BLOCK; ++i)
+	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
 	{
 		if (bombermans[i] != nullptr)
 		{
@@ -70,10 +69,11 @@ Update_Status Stage1::Update()
 {
 	KEY_STATE* keys = App->input->keys;
 
-	HandleEnemiesSpawn();
+	if (this->IsEnabled()) {
+		HandleEnemiesSpawn();
+	}
 
-
-	for (uint i = 0; i < MAX_BLOCK; ++i)
+	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
 	{
 		if (bombermans[i] != nullptr)
 		{
@@ -95,10 +95,12 @@ Update_Status Stage1::PostUpdate()
 	
 	App->render->Blit(bgTexture, 0, 0, NULL);
 	sprintf_s(scoreText, 10, "%7d", score);
-	App->fonts->BlitText(2, 16, scoreFont, scoreText);
+	if (scoreFont != NULL) {
+		App->fonts->BlitText(2, 16, scoreFont, scoreText);
+	}
 
 
-	for (uint i = 0; i < MAX_BLOCK; ++i)
+	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
 	{
 		if (bombermans[i] != nullptr)
 		{
@@ -113,6 +115,7 @@ bool Stage1::Square(int x, int y, int color, Puyo* piece)
 {
 	if (y == 2) {
 		App->fade->FadeToBlack((Module*)App->stage1, (Module*)App->sceneIntro, 90);
+		stop = true;
 		return true;
 	}
 	else {
@@ -124,7 +127,7 @@ bool Stage1::Square(int x, int y, int color, Puyo* piece)
 			DeleteMatching(color);
 			FallAgain();
 			willFall.empty();
-			//score += 50;
+			score += 50;
 			return true;
 		}
 		else {
@@ -170,7 +173,7 @@ bool Stage1::DeleteMatching(int color) {
 			//Horizontal
 			if (grid[i - 1][j].color == color && grid[i + 1][j].color == color && grid[i][j].color == color) {
 
-				//control = false;
+				control = false;
 
 				for (int k = j-1; k > 1; k--) {
 					if (grid[i - 1][k].pointer != nullptr) {
@@ -204,7 +207,7 @@ bool Stage1::DeleteMatching(int color) {
 			//Vertical
 			if (grid[i][j - 1].color == color && grid[i][j + 1].color == color && grid[i][j].color == color) {
 
-				//control = false;
+				control = false;
 
 				for (int k = j - 2; k > 1; k--) {
 					if (grid[i][k].pointer != nullptr) {
@@ -232,6 +235,7 @@ bool Stage1::DeleteMatching(int color) {
 			//Diagonal UL->BR
 			if (grid[i - 1][j - 1].color == color && grid[i + 1][j + 1].color == color && grid[i][j].color == color) {
 
+				control = false;
 
 				for (int k = j - 1; k > 1; k--) {
 					if (grid[i - 1][k-1].pointer != nullptr) {
@@ -265,6 +269,7 @@ bool Stage1::DeleteMatching(int color) {
 			//Diagonal BL->UR
 			if (grid[i - 1][j + 1].color == color && grid[i + 1][j - 1].color == color && grid[i][j].color == color) {
 
+				control = false;
 
 				for (int k = j - 1; k > 1; k--) {
 					if (grid[i - 1][k + 1].pointer != nullptr) {
@@ -306,7 +311,7 @@ bool Stage1::FallAgain()
 		if (p->pointer != nullptr) {
 			p->color = EMPTY_SPACE;
 			p->pointer->falling = true;
-			p = nullptr;
+			p->pointer = nullptr;
 		}
 	}
 	return true;
@@ -315,7 +320,7 @@ bool Stage1::FallAgain()
 bool Stage1::CleanUp()
 {
 
-	for (uint i = 0; i < MAX_BLOCK; ++i)
+	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
 	{
 		if (bombermans[i] != nullptr)
 		{
@@ -369,13 +374,17 @@ void Stage1::SpawnBomberman(const Spawnpoint& info)
 {
 	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
 	{
-		if (bombermans[i] == nullptr)
+		if (bombermans[i] == nullptr && !stop)
 		{
 			if (bombermans[i] == bombermans[0] || (bombermans[i-1]->block[0]->falling == false && bombermans[i-1]->block[1]->falling == false && bombermans[i-1]->block[2]->falling == false))
 			{
 				bombermans[i] = new ModulePieces(true);
 
 				bombermans[i]->spritesTexture = spritesTexture;
+
+				if (!control) {
+					control = true;
+				}
 			}
 			break;
 		}
