@@ -225,6 +225,7 @@ Update_Status ModulePieces::Update()
 			block[i]->currentAnimation->Update();
 		}
 		if (App->stage1->DownOpen(block[i]->pos.x / 16, block[i]->pos.y / 16)) {
+			block[i]->active = true;
 			block[i]->pos.y += block[i]->speed;
 		}
 		else {

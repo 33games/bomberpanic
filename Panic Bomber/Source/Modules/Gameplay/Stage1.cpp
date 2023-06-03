@@ -46,7 +46,7 @@ bool Stage1::Start()
 
 	bgTexture = App->textures->Load("Assets/Sprites/BattleArena.png");
 	App->audio->PlayMusic("Assets/Music/Stage 1.ogg", 1.0f);
-	place = App->audio->LoadFx("Assets/SFX/i.wav");
+	place = App->audio->LoadFx("Assets/SFX/place.wav");
 
 	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
 	{
@@ -97,8 +97,6 @@ Update_Status Stage1::Update()
 Update_Status Stage1::PostUpdate()
 {
 	App->render->Blit(bgTexture, 0, 0, NULL);
-	App->render->Blit(endTexture_player1, 40, 56, NULL);
-	App->render->Blit(endTexture_player2, 188, 56, NULL);
 	sprintf_s(scoreText, 10, "%7d", score);
 
 	if (scoreFont != NULL) {
@@ -113,6 +111,8 @@ Update_Status Stage1::PostUpdate()
 			bombermans[i]->PostUpdate();
 		}
 	}
+	App->render->Blit(endTexture_player1, 40, 56, NULL);
+	App->render->Blit(endTexture_player2, 188, 56, NULL);
 
 	return Update_Status::UPDATE_CONTINUE;
 }
@@ -137,7 +137,7 @@ bool Stage1::Square(int x, int y, int color, Puyo* piece)
 			grid[x][y].pointer = piece;
 			DeleteMatching(color);
 			FallAgain();
-			willFall.empty();
+			willFall.clear();
 			score += 50;
 			return true;
 		}
@@ -336,7 +336,9 @@ bool Stage1::FallAgain()
 		if (p->pointer != nullptr) {
 			p->color = EMPTY_SPACE;
 			p->pointer->falling = true;
+			p->pointer->speed = 1.5;
 			p->pointer = nullptr;
+			p = nullptr;
 		}
 	}
 	return true;
