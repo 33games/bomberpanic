@@ -108,7 +108,7 @@ Update_Status Stage1::Update()
 
 	if (keys[SDL_Scancode::SDL_SCANCODE_F3] == KEY_STATE::KEY_DOWN) {
 
-		this->score += 77;
+		this->score += 333;
 	}
 
 	if (keys[SDL_Scancode::SDL_SCANCODE_F2] == KEY_STATE::KEY_DOWN) {
@@ -160,12 +160,15 @@ bool Stage1::Square(int x, int y, int color, Puyo* piece)
 
 	else 
 	{
-		if (grid[x][y].color == EMPTY_SPACE)
+		if (grid[x][y].color == EMPTY_SPACE && x > 0)
 		{
 			App->audio->PlayFx(place, 0);
 			grid[x][y].color = color;
 			grid[x][y].pointer = piece;
+			grid[x][y].pointer->placed = true;
+			grid[x][y].pointer->speed = 0.2;
 			DeleteMatching(color);
+			Explode();
 			FallAgain();
 			willFall.clear();
 			score += 50;
@@ -210,150 +213,192 @@ bool Stage1::DownOpen(int x, int y)
 
 bool Stage1::DeleteMatching(int color) {
 	for (int i = 1; i < COLUMNS - 1; i++) {
-		for (int j = 1; j < ROWS - 1; j++) {
+		for (int j = 2; j < ROWS - 1; j++) {
 			//Horizontal
-			if (grid[i - 1][j].color == color && grid[i + 1][j].color == color && grid[i][j].color == color) {
+			if (color != EMPTY_SPACE) {
+				if ((grid[i - 1][j].color == color && grid[i + 1][j].color == color && grid[i][j].color == color)) {
 
-				control = false;
+					control = false;
 
-				score += 500;
+					score += 500;
 
-				for (int k = j-1; k > 1; k--) {
-					if (grid[i - 1][k].pointer != nullptr) {
-						willFall.push_back(&grid[i - 1][k]);
-					};
-					if (grid[i + 1][k].pointer != nullptr) {
-						willFall.push_back(&grid[i + 1][k]);
-					};
-					if (grid[i][k].pointer != nullptr) {
-						willFall.push_back(&grid[i][k]);
-					};
+					for (int k = j - 1; k > 1; k--) {
+						if (grid[i - 1][k].pointer != nullptr) {
+							willFall.push_back(&grid[i - 1][k]);
+						};
+						if (grid[i + 1][k].pointer != nullptr) {
+							willFall.push_back(&grid[i + 1][k]);
+						};
+						if (grid[i][k].pointer != nullptr) {
+							willFall.push_back(&grid[i][k]);
+						};
+					}
+					delete grid[i - 1][j].pointer;
+					delete grid[i + 1][j].pointer;
+					delete grid[i][j].pointer;
+
+					grid[i - 1][j].pointer->currentAnimation = nullptr;
+					grid[i + 1][j].pointer->currentAnimation = nullptr;
+					grid[i][j].pointer->currentAnimation = nullptr;
+
+					grid[i - 1][j].pointer->falling = false;
+					grid[i + 1][j].pointer->falling = false;
+					grid[i][j].pointer->falling = false;
+
+					grid[i - 1][j].pointer->deleted = true;
+					grid[i + 1][j].pointer->deleted = true;
+					grid[i][j].pointer->deleted = true;
+
+					grid[i - 1][j].pointer = nullptr;
+					grid[i + 1][j].pointer = nullptr;
+					grid[i][j].pointer = nullptr;
+
+					grid[i - 1][j].color = EMPTY_SPACE;
+					grid[i + 1][j].color = EMPTY_SPACE;
+					grid[i][j].color = EMPTY_SPACE;
+
+					KeepChecking(i - 2, j, color, LEFT);
+					KeepChecking(i + 2, j, color, RIGHT);
+
+					deleted = true;
 				}
-				delete grid[i - 1][j].pointer;
-				delete grid[i + 1][j].pointer;
-				delete grid[i][j].pointer;
+				//Vertical
+				if (grid[i][j - 1].color == color && grid[i][j + 1].color == color && grid[i][j].color == color) {
 
-				grid[i - 1][j].pointer->currentAnimation = nullptr;
-				grid[i + 1][j].pointer->currentAnimation = nullptr;
-				grid[i][j].pointer->currentAnimation = nullptr;
+					control = false;
 
-				grid[i - 1][j].pointer = nullptr;
-				grid[i + 1][j].pointer = nullptr;
-				grid[i][j].pointer = nullptr;
+					score += 500;
 
+					for (int k = j - 2; k > 1; k--) {
+						if (grid[i][k].pointer != nullptr) {
+							willFall.push_back(&grid[i][k]);
+						};
+					}
+					delete grid[i][j - 1].pointer;
+					delete grid[i][j + 1].pointer;
+					delete grid[i][j].pointer;
 
-				grid[i - 1][j].color = EMPTY_SPACE;
-				grid[i + 1][j].color = EMPTY_SPACE;
-				grid[i][j].color = EMPTY_SPACE;
+					grid[i][j - 1].pointer->currentAnimation = nullptr;
+					grid[i][j + 1].pointer->currentAnimation = nullptr;
+					grid[i][j].pointer->currentAnimation = nullptr;
 
-				deleted = true;
-			}
-			//Vertical
-			if (grid[i][j - 1].color == color && grid[i][j + 1].color == color && grid[i][j].color == color) {
+					grid[i][j - 1].pointer->falling = false;
+					grid[i][j + 1].pointer->falling = false;
+					grid[i][j].pointer->falling = false;
 
-				control = false;
+					grid[i][j-1].pointer->deleted = true;
+					grid[i][j+1].pointer->deleted = true;
+					grid[i][j].pointer->deleted = true;
 
-				score += 500;
+					grid[i][j - 1].pointer = nullptr;
+					grid[i][j + 1].pointer = nullptr;
+					grid[i][j].pointer = nullptr;
 
-				for (int k = j - 2; k > 1; k--) {
-					if (grid[i][k].pointer != nullptr) {
-						willFall.push_back(&grid[i][k]);
-					};
+					grid[i][j - 1].color = EMPTY_SPACE;
+					grid[i][j + 1].color = EMPTY_SPACE;
+					grid[i][j].color = EMPTY_SPACE;
+
+					KeepChecking(i, j - 2, color, TOP);
+					KeepChecking(i, j + 2, color, BOTTOM);
+
+					deleted = true;
 				}
-				delete grid[i][j-1].pointer;
-				delete grid[i][j+1].pointer;
-				delete grid[i][j].pointer;
+				//Diagonal UL->BR
+				if (grid[i - 1][j - 1].color == color && grid[i + 1][j + 1].color == color && grid[i][j].color == color) {
 
-				grid[i][j-1].pointer->currentAnimation = nullptr;
-				grid[i][j+1].pointer->currentAnimation = nullptr;
-				grid[i][j].pointer->currentAnimation = nullptr;
+					control = false;
 
+					score += 500;
 
-				grid[i][j - 1].pointer = nullptr;
-				grid[i][j + 1].pointer = nullptr;
-				grid[i][j].pointer = nullptr;
+					for (int k = j - 1; k > 1; k--) {
+						if (grid[i - 1][k - 1].pointer != nullptr) {
+							willFall.push_back(&grid[i - 1][k - 1]);
+						};
+						if (grid[i + 1][k + 1].pointer != nullptr) {
+							willFall.push_back(&grid[i + 1][k + 1]);
+						};
+						if (grid[i][k].pointer != nullptr) {
+							willFall.push_back(&grid[i][k]);
+						};
+					}
 
-				grid[i][j - 1].color = EMPTY_SPACE;
-				grid[i][j + 1].color = EMPTY_SPACE;
-				grid[i][j].color = EMPTY_SPACE;
+					delete grid[i - 1][j - 1].pointer;
+					delete grid[i + 1][j + 1].pointer;
+					delete grid[i][j].pointer;
 
-				deleted = true;
-			}
-			//Diagonal UL->BR
-			if (grid[i - 1][j - 1].color == color && grid[i + 1][j + 1].color == color && grid[i][j].color == color) {
+					grid[i - 1][j - 1].pointer->currentAnimation = nullptr;
+					grid[i + 1][j + 1].pointer->currentAnimation = nullptr;
+					grid[i][j].pointer->currentAnimation = nullptr;
 
-				control = false;
+					grid[i - 1][j - 1].pointer->falling = false;
+					grid[i + 1][j + 1].pointer->falling = false;
+					grid[i][j].pointer->falling = false;
 
-				score += 500;
+					grid[i - 1][j-1].pointer->deleted = true;
+					grid[i + 1][j+1].pointer->deleted = true;
+					grid[i][j].pointer->deleted = true;
 
-				for (int k = j - 1; k > 1; k--) {
-					if (grid[i - 1][k-1].pointer != nullptr) {
-						willFall.push_back(&grid[i - 1][k-1]);
-					};
-					if (grid[i + 1][k+1].pointer != nullptr) {
-						willFall.push_back(&grid[i + 1][k+1]);
-					};
-					if (grid[i][k].pointer != nullptr) {
-						willFall.push_back(&grid[i][k]);
-					};
+					grid[i - 1][j - 1].pointer = nullptr;
+					grid[i + 1][j + 1].pointer = nullptr;
+					grid[i][j].pointer = nullptr;
+
+					grid[i - 1][j - 1].color = EMPTY_SPACE;
+					grid[i + 1][j + 1].color = EMPTY_SPACE;
+					grid[i][j].color = EMPTY_SPACE;
+
+					KeepChecking(i - 2, j - 2, color, TOP_LEFT);
+					KeepChecking(i + 2, j + 2, color, BOTTOM_RIGHT);
+
+					deleted = true;
 				}
+				//Diagonal BL->UR
+				if (grid[i - 1][j + 1].color == color && grid[i + 1][j - 1].color == color && grid[i][j].color == color) {
 
-				delete grid[i - 1][j-1].pointer;
-				delete grid[i + 1][j+1].pointer;
-				delete grid[i][j].pointer;
+					control = false;
 
-				grid[i - 1][j-1].pointer->currentAnimation = nullptr;
-				grid[i + 1][j+1].pointer->currentAnimation = nullptr;
-				grid[i][j].pointer->currentAnimation = nullptr;
+					score += 500;
 
-				grid[i - 1][j-1].pointer = nullptr;
-				grid[i + 1][j+1].pointer = nullptr;
-				grid[i][j].pointer = nullptr;
+					for (int k = j - 1; k > 1; k--) {
+						if (grid[i - 1][k + 1].pointer != nullptr) {
+							willFall.push_back(&grid[i - 1][k + 1]);
+						};
+						if (grid[i + 1][k - 1].pointer != nullptr) {
+							willFall.push_back(&grid[i + 1][k - 1]);
+						};
+						if (grid[i][k].pointer != nullptr) {
+							willFall.push_back(&grid[i][k]);
+						};
+					}
 
+					delete grid[i - 1][j + 1].pointer;
+					delete grid[i + 1][j - 1].pointer;
+					delete grid[i][j].pointer;
 
-				grid[i - 1][j-1].color = EMPTY_SPACE;
-				grid[i + 1][j+1].color = EMPTY_SPACE;
-				grid[i][j].color = EMPTY_SPACE;
+					grid[i - 1][j + 1].pointer->currentAnimation = nullptr;
+					grid[i + 1][j - 1].pointer->currentAnimation = nullptr;
+					grid[i][j].pointer->currentAnimation = nullptr;
 
-				deleted = true;
-			}
-			//Diagonal BL->UR
-			if (grid[i - 1][j + 1].color == color && grid[i + 1][j - 1].color == color && grid[i][j].color == color) {
+					grid[i - 1][j + 1].pointer->falling = false;
+					grid[i + 1][j - 1].pointer->falling = false;
+					grid[i][j].pointer->falling = false;
 
-				control = false;
+					grid[i - 1][j+1].pointer->deleted = true;
+					grid[i + 1][j-1].pointer->deleted = true;
+					grid[i][j].pointer->deleted = true;
 
-				score += 500;
+					grid[i - 1][j + 1].pointer = nullptr;
+					grid[i + 1][j - 1].pointer = nullptr;
+					grid[i][j].pointer = nullptr;
 
-				for (int k = j - 1; k > 1; k--) {
-					if (grid[i - 1][k + 1].pointer != nullptr) {
-						willFall.push_back(&grid[i - 1][k + 1]);
-					};
-					if (grid[i + 1][k - 1].pointer != nullptr) {
-						willFall.push_back(&grid[i + 1][k - 1]);
-					};
-					if (grid[i][k].pointer != nullptr) {
-						willFall.push_back(&grid[i][k]);
-					};
+					grid[i - 1][j + 1].color = EMPTY_SPACE;
+					grid[i + 1][j - 1].color = EMPTY_SPACE;
+					grid[i][j].color = EMPTY_SPACE;
+
+					KeepChecking(i - 2, j + 2, color, BOTTOM_LEFT);
+					KeepChecking(i + 2, j - 2, color, TOP_RIGHT);
+
+					deleted = true;
 				}
-
-				delete grid[i - 1][j + 1].pointer;
-				delete grid[i + 1][j - 1].pointer;
-				delete grid[i][j].pointer;
-
-				grid[i - 1][j + 1].pointer->currentAnimation = nullptr;
-				grid[i + 1][j - 1].pointer->currentAnimation = nullptr;
-				grid[i][j].pointer->currentAnimation = nullptr;
-
-				grid[i - 1][j + 1].pointer = nullptr;
-				grid[i + 1][j - 1].pointer = nullptr;
-				grid[i][j].pointer = nullptr;
-
-
-				grid[i - 1][j + 1].color = EMPTY_SPACE;
-				grid[i + 1][j - 1].color = EMPTY_SPACE;
-				grid[i][j].color = EMPTY_SPACE;
-
-				deleted = true;
 			}
 		}
 	}
@@ -366,6 +411,7 @@ bool Stage1::FallAgain()
 		if (p->pointer != nullptr) {
 			p->color = EMPTY_SPACE;
 			p->pointer->falling = true;
+			p->pointer->placed = false;
 			p->pointer->speed = 1.5;
 			p->pointer = nullptr;
 			p = nullptr;
@@ -393,7 +439,9 @@ bool Stage1::CleanUp()
 			grid[i][j].pointer = nullptr;
 		}
 	}
+	counter = 0;
 	score = 0;
+	willFall.clear();
 	App->textures->CleanUp();
 	App->stage1->Disable();
 
@@ -439,19 +487,20 @@ void Stage1::SpawnBomberman(const Spawnpoint& info)
 	{
 		if (bombermans[i] == nullptr && !stop)
 		{
-			if (bombermans[i] == bombermans[0] || (bombermans[i-1]->block[0]->falling == false && bombermans[i-1]->block[1]->falling == false && bombermans[i-1]->block[2]->falling == false) || deleted == true)
+			if (bombermans[i] == bombermans[0] || (bombermans[i-1]->block[0]->falling == false && bombermans[i-1]->block[1]->falling == false && bombermans[i-1]->block[2]->falling == false))
 			{
 				bombermans[i] = new ModulePieces(true);
 
 				bombermans[i]->spritesTexture = spritesTexture;
 
+				if (deleted) {
+					deleted = false;
+				}
+
 				if (!control) {
 					control = true;
 				}
 
-				if (deleted) {
-					deleted = false;
-				}
 
 				if (counter == 4) {
 					counter = 1;
@@ -464,4 +513,133 @@ void Stage1::SpawnBomberman(const Spawnpoint& info)
 			break;
 		}
 	}
+}
+
+
+bool Stage1::KeepChecking(int x, int y, int color, int direction) {
+	if (grid[x][y].pointer != nullptr) {
+		if (grid[x][y].pointer->color == color) {
+			for (int i = y - 1; y < 1; y--) {
+				if (grid[x][i].pointer != nullptr) {
+					willFall.push_back(&grid[x][i]);
+				}
+			}
+			delete grid[x][y].pointer;
+			grid[x][y].pointer->currentAnimation = nullptr;
+			grid[x][y].pointer->falling = false;
+			grid[x][y].pointer->deleted = true;
+			grid[x][y].pointer = nullptr;
+			grid[x][y].color = EMPTY_SPACE;
+			score += 300;
+			switch (direction) {
+			case (TOP):
+				KeepChecking(x, y - 1, color, direction);
+				break;
+			case (TOP_RIGHT):
+				KeepChecking(x + 1, y - 1, color, direction);
+				break;
+			case (RIGHT):
+				KeepChecking(x + 1, y, color, direction);
+				break;
+			case (BOTTOM_RIGHT):
+				KeepChecking(x + 1, y + 1, color, direction);
+				break;
+			case (BOTTOM):
+				KeepChecking(x, y + 1, color, direction);
+				break;
+			case (BOTTOM_LEFT):
+				KeepChecking(x - 1, y - 1, color, direction);
+				break;
+			case (LEFT):
+				KeepChecking(x - 1, y, color, direction);
+				break;
+			case(TOP_LEFT):
+				KeepChecking(x - 1, y - 1, color, direction);
+				break;
+			}
+		}
+		else {
+			return true;
+		}
+	}
+	else {
+		return true;
+	}
+}
+
+bool Stage1::Explode() {
+	for (int i = 1; i < COLUMNS - 1; i++) {
+		for (int j = 2; j < ROWS - 1; j++) {
+			if (grid[i][j].color == PRIMED_BOMB) {
+				for (int k = 1; k <= power; k++) {
+					for (int l = j - 1; l > 1; l--) {
+						if (grid[i][l-k].pointer != nullptr) {
+							willFall.push_back(&grid[i][l-k]);
+						}
+						if (grid[i-k][l].pointer != nullptr) {
+							willFall.push_back(&grid[i-k][l]);
+						}
+						if (grid[i+k][l].pointer != nullptr) {
+							willFall.push_back(&grid[i+k][l]);
+						}
+					}
+					if (grid[i][j - k].pointer != nullptr) {
+						if (grid[i][j - k].color == BOMB) {
+							grid[i][j - k].color = PRIMED_BOMB;
+						}
+						else {
+							grid[i][j - k].pointer->currentAnimation = nullptr;
+							grid[i][j - k].pointer->falling = false;
+							grid[i][j - k].pointer->deleted = true;
+							grid[i][j - k].pointer = nullptr;
+							grid[i][j - k].color = EMPTY_SPACE;
+						}
+					}
+					if (grid[i][j + k].pointer != nullptr) {
+						if (grid[i][j + k].color == BOMB) {
+							grid[i][j + k].color = PRIMED_BOMB;
+						}
+						else {
+							grid[i][j + k].pointer->currentAnimation = nullptr;
+							grid[i][j + k].pointer->falling = false;
+							grid[i][j + k].pointer->deleted = true;
+							grid[i][j + k].pointer = nullptr;
+							grid[i][j + k].color = EMPTY_SPACE;
+						}
+					}
+					if (grid[i - k][j].pointer != nullptr) {
+						if (grid[i-k][j].color == BOMB) {
+							grid[i-k][j].color = PRIMED_BOMB;
+						}
+						else {
+							grid[i - k][j].pointer->currentAnimation = nullptr;
+							grid[i - k][j].pointer->falling = false;
+							grid[i - k][j].pointer->deleted = true;
+							grid[i - k][j].pointer = nullptr;
+							grid[i - k][j].color = EMPTY_SPACE;
+						}
+					}
+					if (grid[i + k][j].pointer != nullptr) {
+						if (grid[i+k][j].color == BOMB) {
+							grid[i+k][j].color = PRIMED_BOMB;
+						}
+						else {
+							grid[i + k][j].pointer->currentAnimation = nullptr;
+							grid[i + k][j].pointer->falling = false;
+							grid[i + k][j].pointer->deleted = true;
+							grid[i + k][j].pointer = nullptr;
+							grid[i + k][j].color = EMPTY_SPACE;
+						}
+					}
+
+				}
+				grid[i][j].pointer->currentAnimation = nullptr;
+				grid[i][j].pointer->falling = false;
+				grid[i][j].pointer->deleted = true;
+				grid[i][j].pointer = nullptr;
+				grid[i][j].color = EMPTY_SPACE;
+			}
+		}
+	}
+	return true;
 }

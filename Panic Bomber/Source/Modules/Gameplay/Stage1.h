@@ -7,11 +7,22 @@
 #include <list>
 
 #define MAX_BOMBERMAN 333
-#define WINNING_SCORE 5000
+#define WINNING_SCORE 33000
 #define COLUMNS 10
 #define ROWS 14
 
 struct SDL_Texture;
+
+enum directions {
+	TOP = 0,
+	TOP_RIGHT = 1,
+	RIGHT = 2,
+	BOTTOM_RIGHT = 3,
+	BOTTOM = 4,
+	BOTTOM_LEFT = 5,
+	LEFT = 6,
+	TOP_LEFT = 7
+};
 
 struct tile {
 	int color;
@@ -58,7 +69,9 @@ public:
 	bool DownOpen(int x, int y);
 	bool DeleteMatching(int color);
 	bool FallAgain();
-	bool KeepChecking(int x, int y, int color, int direction, Puyo piece);
+	bool KeepChecking(int x, int y, int color, int direction);
+
+	bool Explode();
 
 public:
 	tile grid[COLUMNS][ROWS];
@@ -74,6 +87,8 @@ public:
 	int score = 0;
 
 	int counter = 0;
+
+	int power = 1;
 
 	uint place;
 

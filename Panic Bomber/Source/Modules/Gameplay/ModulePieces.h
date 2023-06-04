@@ -12,8 +12,8 @@
 enum Position {
 	UPPER_LEFT = 0,
 	UPPER_RIGHT = 1,
-	BOTTOM_RIGHT = 2,
-	BOTTOM_LEFT = 3,
+	LOWER_RIGHT = 2,
+	LOWER_LEFT = 3,
 };
 
 enum Bomberman_Color {
@@ -34,10 +34,12 @@ struct Puyo
 {
 	fPoint pos;
 
+	bool placed = false;
 	bool active = true;
 	int color;
 	bool falling = true;
 	float speed = 0.2;
+	bool deleted = false;
 
 	Animation* currentAnimation = nullptr;
 	Animation animationBomberman;

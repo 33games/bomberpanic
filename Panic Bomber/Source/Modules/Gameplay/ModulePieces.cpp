@@ -20,31 +20,30 @@ ModulePieces::ModulePieces(bool startEnabled) : Module(startEnabled)
 		}
 		if (!App->stage1->lit) {
 			block[0]->color = BOMB;
-			block[0]->pos.x = 80;
-			block[0]->pos.y = 32;
 			block[0]->animationBomberman.PushBack({ 0, 80, 16, 16 });
 			block[0]->animationBomberman.PushBack({ 16, 80, 16, 16 });
 			block[0]->animationBomberman.PushBack({ 32, 80, 16, 16 });
 			block[0]->animationBomberman.PushBack({ 16, 80, 16, 16 });
-			block[0]->animationBomberman.speed = 0.10f;
-			block[0]->currentAnimation = &block[0]->animationBomberman;
-			block[1]->active = false;
-			block[2]->active = false;
 		}
 		else {
 			block[0]->color = PRIMED_BOMB;
-			block[0]->pos.x = 80;
-			block[0]->pos.y = 32;
 			block[0]->animationBomberman.PushBack({ 48, 80, 16, 16 });
-			block[0]->animationBomberman.speed = 0.10f;
-			block[0]->currentAnimation = &block[0]->animationBomberman;
-			block[1]->active = false;
-			block[2]->active = false;
 		}
+		block[1]->color = EMPTY_SPACE;
+		block[2]->color = EMPTY_SPACE;
+		block[0]->animationBomberman.speed = 0.10f;
+		block[0]->currentAnimation = &block[0]->animationBomberman;
+		block[0]->pos.x = 80;
+		block[0]->pos.y = 32;
+		block[1]->currentAnimation = nullptr;
+		block[1]->deleted = true;
+		block[2]->currentAnimation = nullptr;
+		block[2]->deleted = true;
 	}
 	else {
 		for (int i = 0; i < 3; i++) {
 			block[i] = new Puyo;
+			block[i]->speed = 0.2;
 		}
 		hole = rand() % POSITIONS - 1;
 		switch (hole)
@@ -77,7 +76,7 @@ ModulePieces::ModulePieces(bool startEnabled) : Module(startEnabled)
 			block[2]->pos.x = 64;
 			block[2]->pos.y = 16;
 			break;
-		case BOTTOM_RIGHT:
+		case LOWER_RIGHT:
 			//Bottom-right
 			block[0]->color = rand() % 5;
 			block[0]->pos.x = 64;
@@ -91,7 +90,7 @@ ModulePieces::ModulePieces(bool startEnabled) : Module(startEnabled)
 			block[2]->pos.x = 80;
 			block[2]->pos.y = 16;
 			break;
-		case BOTTOM_LEFT:
+		case LOWER_LEFT:
 			//Bottom-left
 			block[0]->color = rand() % 5;
 			block[0]->pos.x = 64;
@@ -210,25 +209,21 @@ bool ModulePieces::Start()
 {	
 	Stage1* Stage1 = App->stage1;
 
-	spawned = true;
-
 	return true;
 }
 
 Update_Status ModulePieces::Update()
 {
 	KEY_STATE* keys = App->input->keys;
-
-	GamePad& pad = App->input->pads[0];
+	
 	for (int i = 0; i < 3; i++) {
-		if (block[i]->currentAnimation != nullptr) {
+		if (block[i]->currentAnimation != nullptr || !block[i]->deleted) {
 			block[i]->currentAnimation->Update();
 		}
-		if (App->stage1->DownOpen(block[i]->pos.x / 16, block[i]->pos.y / 16)) {
-			block[i]->active = true;
+		if (App->stage1->DownOpen(block[i]->pos.x / 16, block[i]->pos.y / 16) && block[i]->falling == true) {
 			block[i]->pos.y += block[i]->speed;
 		}
-		else {
+		else if (block[i]->placed == false) {
 			block[i]->falling = false;
 			block[0]->speed = 1.5;
 			block[1]->speed = 1.5;
@@ -240,8 +235,9 @@ Update_Status ModulePieces::Update()
 			App->stage1->Square(block[i]->pos.x / 16, block[i]->pos.y / 16, block[i]->color, block[i]);
 		}
 	}
+	GamePad& pad = App->input->pads[0];
 	if (App->stage1->counter == 4) {
-		if (block[0]->active) {
+		if (block[0]->active && App->stage1->control == true && !App->stage1->forcedstop && block[0]->placed == false) {
 			if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_DOWN || pad.left == KEY_STATE::KEY_DOWN) {
 				if (App->stage1->LeftOpen(block[0]->pos.x / 16, block[0]->pos.y / 16)) {
 					block[0]->pos.x -= 16;
@@ -262,9 +258,13 @@ Update_Status ModulePieces::Update()
 				block[0]->speed = 0.2;
 			}
 		}
+		else if (App->stage1->forcedstop) {
+			block[0]->speed = 0;
+			block[1]->speed = 0;
+			block[2]->speed = 0;
+		}
 	}
-	else if ((block[0]->active && block[1]->active && block[2]->active) && App->stage1->control == true && !App->stage1->forcedstop) {
-		spawned = false;
+	else if ((block[0]->active && block[1]->active && block[2]->active) && App->stage1->control == true && !App->stage1->forcedstop && block[0]->placed == false) {
 		if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_DOWN || pad.left == KEY_STATE::KEY_DOWN) {
 			if (App->stage1->LeftOpen(block[0]->pos.x / 16, block[0]->pos.y / 16) && App->stage1->LeftOpen(block[1]->pos.x / 16, block[1]->pos.y / 16) && App->stage1->LeftOpen(block[2]->pos.x / 16, block[2]->pos.y / 16)) {
 				block[0]->pos.x -= 16;
@@ -306,13 +306,13 @@ Update_Status ModulePieces::Update()
 				block[2]->pos.y += 16;
 				hole = 0;
 				break;
-			case BOTTOM_RIGHT: //BR
+			case LOWER_RIGHT: //BR
 				block[0]->pos.x += 16;
 				block[1]->pos.y += 16;
 				block[2]->pos.x -= 16;
 				hole = 1;
 				break;
-			case BOTTOM_LEFT: //BL
+			case LOWER_LEFT: //BL
 				block[0]->pos.y += 16;
 				block[1]->pos.x -= 16;
 				block[2]->pos.y -= 16;
@@ -334,13 +334,13 @@ Update_Status ModulePieces::Update()
 				block[2]->pos.x += 16;
 				hole = 2;
 				break;
-			case BOTTOM_RIGHT: //BR
+			case LOWER_RIGHT: //BR
 				block[0]->pos.y -= 16;
 				block[1]->pos.x += 16;
 				block[2]->pos.y += 16;
 				hole = 3;
 				break;
-			case BOTTOM_LEFT: //BL
+			case LOWER_LEFT: //BL
 				block[0]->pos.x += 16;
 				block[1]->pos.y += 16;
 				block[2]->pos.x -= 16;
@@ -350,38 +350,30 @@ Update_Status ModulePieces::Update()
 		}
 	}
 
-	else {
-
+	else if(App->stage1->forcedstop) {
 		block[0]->speed = 0;
 		block[1]->speed = 0;
 		block[2]->speed = 0;
 	}
 
-	if (App->input->keys[SDL_SCANCODE_F1] == KEY_DOWN)
+	if (App->input->keys[SDL_SCANCODE_F1] == KEY_DOWN) {
 		App->stage1->debug = !App->stage1->debug;
-
-
+	}
 
 	Update_Status ret = Update_Status::UPDATE_CONTINUE;
 	return ret;
-
-
-
-
-
-
 }
 
 
 Update_Status ModulePieces::PostUpdate()
 {
-
-	if (App->stage1->debug)
+	if (App->stage1->debug) {
 		DebugDraw();
+	}
 
 	Update_Status ret = Update_Status::UPDATE_CONTINUE;
 	for (int i = 0; i < 3; i++) {
-		if (block[i]->currentAnimation != nullptr) {
+		if (block[i]->currentAnimation != nullptr || !block[i]->deleted || block[i]->currentAnimation != NULL) {
 			App->render->Blit(App->stage1->spritesTexture, block[i]->pos.x, block[i]->pos.y, &block[i]->currentAnimation->GetCurrentFrame());
 		}
 	}

@@ -395,4 +395,4 @@ FodyWeavers.xsd
 *.msp
 
 # JetBrains Rider
-Panic Bomber/Source/Debug/
+Panic Bomber\Source\Debug/

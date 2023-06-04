@@ -40,7 +40,7 @@ Update_Status SceneIntro::Update()
 {
 	GamePad& pad = App->input->pads[0];
 
-	if (this->IsEnabled() && App->input->keys[SDL_SCANCODE_SPACE] == KEY_STATE::KEY_DOWN || pad.a)
+	if (this->IsEnabled() && App->input->keys[SDL_SCANCODE_SPACE] == KEY_STATE::KEY_DOWN || this->IsEnabled() && pad.a)
 	{
 		App->fade->FadeToBlack((Module*)App->sceneIntro, (Module*)App->stage1, 90);
 	}
