@@ -263,7 +263,7 @@ Update_Status ModulePieces::Update()
 			}
 		}
 	}
-	else if ((block[0]->active && block[1]->active && block[2]->active) && App->stage1->control == true) {
+	else if ((block[0]->active && block[1]->active && block[2]->active) && App->stage1->control == true && !App->stage1->forcedstop) {
 		spawned = false;
 		if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_DOWN || pad.left == KEY_STATE::KEY_DOWN) {
 			if (App->stage1->LeftOpen(block[0]->pos.x / 16, block[0]->pos.y / 16) && App->stage1->LeftOpen(block[1]->pos.x / 16, block[1]->pos.y / 16) && App->stage1->LeftOpen(block[2]->pos.x / 16, block[2]->pos.y / 16)) {
@@ -350,6 +350,12 @@ Update_Status ModulePieces::Update()
 		}
 	}
 
+	else {
+
+		block[0]->speed = 0;
+		block[1]->speed = 0;
+		block[2]->speed = 0;
+	}
 
 	if (App->input->keys[SDL_SCANCODE_F1] == KEY_DOWN)
 		App->stage1->debug = !App->stage1->debug;

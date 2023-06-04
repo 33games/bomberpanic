@@ -90,6 +90,33 @@ Update_Status Stage1::Update()
 		App->fade->FadeToBlack((Module*)App->stage1, (Module*)App->sceneIntro, 200);
 	}
 
+
+	if (keys[SDL_Scancode::SDL_SCANCODE_F5] == KEY_STATE::KEY_DOWN) {
+
+		endTexture_player1 = App->textures->Load("Assets/Sprites/loseScreen.png");
+		endTexture_player2 = App->textures->Load("Assets/Sprites/winScreen.png");
+		App->fade->FadeToBlack((Module*)App->stage1, (Module*)App->sceneIntro, 200);
+
+		stop = true;
+	}
+
+	if (keys[SDL_Scancode::SDL_SCANCODE_F4] == KEY_STATE::KEY_DOWN) {
+		endTexture_player1 = App->textures->Load("Assets/Sprites/winScreen.png");
+		endTexture_player2 = App->textures->Load("Assets/Sprites/loseScreen.png");
+		App->fade->FadeToBlack((Module*)App->stage1, (Module*)App->sceneIntro, 200);
+	}
+
+	if (keys[SDL_Scancode::SDL_SCANCODE_F3] == KEY_STATE::KEY_DOWN) {
+
+		this->score += 77;
+	}
+
+	if (keys[SDL_Scancode::SDL_SCANCODE_F2] == KEY_STATE::KEY_DOWN) {
+
+		forcedstop = !forcedstop;
+				
+	}
+
 	return Update_Status::UPDATE_CONTINUE;
 }
 
@@ -119,6 +146,8 @@ Update_Status Stage1::PostUpdate()
 
 bool Stage1::Square(int x, int y, int color, Puyo* piece)
 {
+
+
 	if (y == 2) 
 	{
 		endTexture_player1 = App->textures->Load("Assets/Sprites/loseScreen.png");
@@ -128,6 +157,7 @@ bool Stage1::Square(int x, int y, int color, Puyo* piece)
 		stop = true;
 		return true;
 	}
+
 	else 
 	{
 		if (grid[x][y].color == EMPTY_SPACE)
@@ -145,7 +175,6 @@ bool Stage1::Square(int x, int y, int color, Puyo* piece)
 			return false;
 		}
 	}
-
 }
 
 bool Stage1::LeftOpen(int x, int y)
@@ -436,5 +465,3 @@ void Stage1::SpawnBomberman(const Spawnpoint& info)
 		}
 	}
 }
-
-

@@ -81,6 +81,10 @@ public:
 
 	int scoreFont;
 
+	bool forcedstop = false;
+
+	bool debug = false;
+
 	SDL_Texture* bgTexture = nullptr;
 
 	SDL_Texture* endTexture_player1 = nullptr;
@@ -97,8 +101,6 @@ public:
 	ModulePieces* bombermans[MAX_BOMBERMAN] = { nullptr };
 
 	Spawnpoint spawnQueue[MAX_BOMBERMAN];
-
-	bool debug = false;
 };
 
 #endif
