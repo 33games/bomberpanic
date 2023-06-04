@@ -45,6 +45,7 @@ bool Stage1::Start()
 	if (spritesTexture == nullptr) return false;
 
 	bgTexture = App->textures->Load("Assets/Sprites/BattleArena.png");
+	bgTexture2 = App->textures->Load("Assets/Sprites/BattleArenaBackground.png");
 	App->audio->PlayMusic("Assets/Music/Stage 1.ogg", 1.0f);
 	place = App->audio->LoadFx("Assets/SFX/place.wav");
 
@@ -126,10 +127,19 @@ Update_Status Stage1::PostUpdate()
 	App->render->Blit(bgTexture, 0, 0, NULL);
 	sprintf_s(scoreText, 10, "%7d", score);
 
+	if (score > next_change)
+	{
+		rect1.x += 128;
+		rect2.x += 128;
+		next_change += 5000;
+	}
+
+	App->render->Blit(bgTexture2, 63, 15, section1);
+	App->render->Blit(bgTexture2, 16, 47, section2);
+
 	if (scoreFont != NULL) {
 		App->fonts->BlitText(2, 16, scoreFont, scoreText);
 	}
-
 
 	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
 	{

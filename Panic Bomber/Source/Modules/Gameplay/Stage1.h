@@ -86,6 +86,8 @@ public:
 
 	int score = 0;
 
+	int next_change = 5000;
+
 	int counter = 0;
 
 	int power = 1;
@@ -101,6 +103,7 @@ public:
 	bool debug = false;
 
 	SDL_Texture* bgTexture = nullptr;
+	SDL_Texture* bgTexture2 = nullptr;
 
 	SDL_Texture* endTexture_player1 = nullptr;
 	SDL_Texture* endTexture_player2 = nullptr;
@@ -116,6 +119,11 @@ public:
 	ModulePieces* bombermans[MAX_BOMBERMAN] = { nullptr };
 
 	Spawnpoint spawnQueue[MAX_BOMBERMAN];
+
+	SDL_Rect rect1 = { 47, 15, 33, 33 };
+	SDL_Rect* section1 = &rect1;
+	SDL_Rect rect2 = { 0, 47, 128, 159 };
+	SDL_Rect* section2 = &rect2;
 };
 
 #endif
