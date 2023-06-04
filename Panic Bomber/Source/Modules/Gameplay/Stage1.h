@@ -97,6 +97,8 @@ public:
 	ModulePieces* bombermans[MAX_BOMBERMAN] = { nullptr };
 
 	Spawnpoint spawnQueue[MAX_BOMBERMAN];
+
+	bool debug = false;
 };
 
 #endif

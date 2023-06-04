@@ -145,6 +145,7 @@ bool Stage1::Square(int x, int y, int color, Puyo* piece)
 			return false;
 		}
 	}
+
 }
 
 bool Stage1::LeftOpen(int x, int y)
@@ -435,3 +436,5 @@ void Stage1::SpawnBomberman(const Spawnpoint& info)
 		}
 	}
 }
+
+

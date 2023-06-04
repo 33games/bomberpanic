@@ -56,6 +56,10 @@ public:
 
 	Update_Status PostUpdate() override;
 
+	
+
+	void DebugDraw();
+
 public:
 	int hole;
 

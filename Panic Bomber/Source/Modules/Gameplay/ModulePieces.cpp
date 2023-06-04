@@ -262,7 +262,8 @@ Update_Status ModulePieces::Update()
 				block[0]->speed = 0.2;
 			}
 		}
-	} else if ((block[0]->active && block[1]->active && block[2]->active) && App->stage1->control == true) {
+	}
+	else if ((block[0]->active && block[1]->active && block[2]->active) && App->stage1->control == true) {
 		spawned = false;
 		if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_DOWN || pad.left == KEY_STATE::KEY_DOWN) {
 			if (App->stage1->LeftOpen(block[0]->pos.x / 16, block[0]->pos.y / 16) && App->stage1->LeftOpen(block[1]->pos.x / 16, block[1]->pos.y / 16) && App->stage1->LeftOpen(block[2]->pos.x / 16, block[2]->pos.y / 16)) {
@@ -348,12 +349,30 @@ Update_Status ModulePieces::Update()
 			}
 		}
 	}
+
+
+	if (App->input->keys[SDL_SCANCODE_F1] == KEY_DOWN)
+		App->stage1->debug = !App->stage1->debug;
+
+
+
 	Update_Status ret = Update_Status::UPDATE_CONTINUE;
 	return ret;
+
+
+
+
+
+
 }
+
 
 Update_Status ModulePieces::PostUpdate()
 {
+
+	if (App->stage1->debug)
+		DebugDraw();
+
 	Update_Status ret = Update_Status::UPDATE_CONTINUE;
 	for (int i = 0; i < 3; i++) {
 		if (block[i]->currentAnimation != nullptr) {
@@ -361,4 +380,87 @@ Update_Status ModulePieces::PostUpdate()
 		}
 	}
 	return ret;
+}
+
+
+
+void ModulePieces::DebugDraw() {
+	float vel = 0.0;
+	for (int i = 1; i < COLUMNS - 1; i++) {
+		for (int j = 3; j < ROWS - 1; j++) {
+
+			SDL_Rect rect = { i * 16, j * 16, 16, 16 };
+
+			switch (App->stage1->grid[i][j].color) {
+			case BOMBERMAN_BLACK:
+				App->render->DrawQuad(rect, 0, 0, 0, 255, vel);
+				break;
+
+			case BOMBERMAN_WHITE:
+				App->render->DrawQuad(rect, 255, 255, 255, 255, vel);
+				break;
+
+			case BOMBERMAN_RED:
+				App->render->DrawQuad(rect, 255, 0, 0, 255, vel);
+				break;
+
+			case BOMBERMAN_BLUE:
+				App->render->DrawQuad(rect, 0, 0, 255, 255, vel);
+				break;
+
+			case BOMBERMAN_GREEN:
+				App->render->DrawQuad(rect, 0, 255, 0, 255, vel);
+				break;
+
+			case BOMB:
+				App->render->DrawQuad(rect, 255, 255, 0, 255, vel);
+				break;
+
+			case PRIMED_BOMB:
+				App->render->DrawQuad(rect, 255, 111, 0, 255, vel);
+				break;
+
+			case EMPTY_SPACE:
+				App->render->DrawQuad(rect, 175, 175, 175, 255, vel);
+				break;
+
+			}
+		}
+	}
+
+	for (int i = 0; i < 3; i++) {
+		if (block[i]->falling == true) {
+			SDL_Rect rect = { block[i]->pos.x, block[i]->pos.y, 16, 16 };
+
+			switch (block[i]->color) {
+			case BOMBERMAN_BLACK:
+				App->render->DrawQuad(rect, 0, 0, 0, 255, vel);
+				break;
+
+			case BOMBERMAN_WHITE:
+				App->render->DrawQuad(rect, 255, 255, 255, 255, vel);
+				break;
+
+			case BOMBERMAN_RED:
+				App->render->DrawQuad(rect, 255, 0, 0, 255, vel);
+				break;
+
+			case BOMBERMAN_BLUE:
+				App->render->DrawQuad(rect, 0, 0, 255, 255, vel);
+				break;
+
+			case BOMBERMAN_GREEN:
+				App->render->DrawQuad(rect, 0, 255, 0, 255, vel);
+				break;
+
+			case BOMB:
+				App->render->DrawQuad(rect, 255, 255, 0, 255, vel);
+				break;
+
+			case PRIMED_BOMB:
+				App->render->DrawQuad(rect, 255, 111, 0, 255, vel);
+				break;
+			}
+		}
+	}
 }
