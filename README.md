@@ -1,5 +1,6 @@
 # Bomberman: Panic Bomber
 Bomberman: Panic Bomber is a falling blocks puzzle game based on the Bomberman franchise. The goal of the game is essentially to cause your opponent to lose by causing their gameplay field to fill to the top with objects.
+
 ([Link to the project.](https://github.com/33games/bomberpanic))
 
 ([Link to the webpage.](https://33games.github.io/website))
