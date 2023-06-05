@@ -215,9 +215,10 @@ bool ModulePieces::Start()
 Update_Status ModulePieces::Update()
 {
 	KEY_STATE* keys = App->input->keys;
-	
+
+	GamePad& pad = App->input->pads[0];
 	for (int i = 0; i < 3; i++) {
-		if (block[i]->currentAnimation != nullptr || !block[i]->deleted) {
+		if (block[i]->currentAnimation != nullptr && !block[i]->deleted && block[i] != nullptr) {
 			block[i]->currentAnimation->Update();
 		}
 		if (App->stage1->DownOpen(block[i]->pos.x / 16, block[i]->pos.y / 16) && block[i]->falling == true) {
@@ -238,7 +239,6 @@ Update_Status ModulePieces::Update()
 			App->stage1->Square(block[i]->pos.x / 16, block[i]->pos.y / 16, block[i]->color, block[i]);
 		}
 	}
-	GamePad& pad = App->input->pads[0];
 	if (App->stage1->counter == 4) {
 		if (block[0]->active && App->stage1->control == true && !App->stage1->forcedstop && block[0]->placed == false) {
 			if (keys[SDL_Scancode::SDL_SCANCODE_A] == KEY_STATE::KEY_DOWN || pad.left == KEY_STATE::KEY_DOWN) {
@@ -284,9 +284,17 @@ Update_Status ModulePieces::Update()
 		}
 		if (keys[SDL_Scancode::SDL_SCANCODE_S] == KEY_STATE::KEY_REPEAT || pad.down == KEY_STATE::KEY_DOWN) {
 			if (App->stage1->DownOpen(block[0]->pos.x / 16, block[0]->pos.y / 16) && App->stage1->DownOpen(block[1]->pos.x / 16, block[1]->pos.y / 16) && App->stage1->DownOpen(block[2]->pos.x / 16, block[2]->pos.y / 16)) {
-				block[0]->speed = 1.5;
-				block[1]->speed = 1.5;
-				block[2]->speed = 1.5;
+				if (block[0] != nullptr) {
+					block[0]->speed = 1.5;
+
+				}
+				if (block[1] != nullptr) {
+					block[1]->speed = 1.5;
+
+				}
+				if (block[2] != nullptr) {
+					block[2]->speed = 1.5;
+				}
 				App->stage1->score += 1;
 			}
 		}
@@ -376,7 +384,7 @@ Update_Status ModulePieces::PostUpdate()
 
 	Update_Status ret = Update_Status::UPDATE_CONTINUE;
 	for (int i = 0; i < 3; i++) {
-		if (block[i]->currentAnimation != nullptr || !block[i]->deleted || block[i]->currentAnimation != NULL) {
+		if (block[i]->currentAnimation != nullptr && !block[i]->deleted && block[i] != nullptr) {
 			App->render->Blit(App->stage1->spritesTexture, block[i]->pos.x, block[i]->pos.y, &block[i]->currentAnimation->GetCurrentFrame());
 		}
 	}

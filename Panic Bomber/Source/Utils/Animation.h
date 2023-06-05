@@ -35,7 +35,7 @@ public:
 
 	void Update()
 	{
-		currentFrame += speed;
+			currentFrame += speed;
 		if (currentFrame >= totalFrames)
 		{
 			currentFrame = (loop) ? 0.0f : totalFrames - 1;
