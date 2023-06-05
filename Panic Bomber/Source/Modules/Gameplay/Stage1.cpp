@@ -62,7 +62,8 @@ bool Stage1::Start()
 	LOG("Loading number assets");
 
 	char lookupTable[] = { "! @,_./0123456789$;< ?abcdefghijklmnopqrstuvwxyz" };
-	scoreFont = App->fonts->Load("Assets/Fonts/rtype_font3.png", lookupTable, 2);
+	font = App->fonts->Load("Assets/Fonts/rtype_font3.png", lookupTable, 2);
+	font2 = App->fonts->Load("Assets/Fonts/rtype_font3.png", lookupTable, 2);
 
 	stop = false;
 
@@ -127,10 +128,7 @@ Update_Status Stage1::PostUpdate()
 {
 	App->render->Blit(bgTexture, 0, 0, NULL);
 	sprintf_s(scoreText, 10, "%7d", score);
-
-	if (scoreFont != NULL) {
-		App->fonts->BlitText(2, 16, scoreFont, scoreText);
-	}
+	sprintf_s(powerText, 8, "%7d", power);
 
 	if (score > next_change)
 	{
@@ -142,6 +140,11 @@ Update_Status Stage1::PostUpdate()
 
 	App->render->Blit(bgTexture2, 63, 15, section1);
 	App->render->Blit(bgTexture2, 16, 47, section2);
+
+	if (font != NULL && font2 != NULL) {
+		App->fonts->BlitText(2, 16, font, scoreText);
+		App->fonts->BlitText(-8, 40, font2, powerText);
+	}
 
 	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
 	{
@@ -179,10 +182,12 @@ bool Stage1::Square(int x, int y, int color, Puyo* piece)
 			grid[x][y].pointer = piece;
 			grid[x][y].pointer->placed = true;
 			grid[x][y].pointer->speed = 0.2;
-			DeleteMatching(color);
-			Explode();
-			FallAgain();
-			willFall.clear();
+			if (finished) {
+				DeleteMatching();
+				Explode();
+				FallAgain();
+				willFall.clear();
+			}
 			score += 50;
 			return true;
 		}
@@ -223,12 +228,12 @@ bool Stage1::DownOpen(int x, int y)
 	}
 }
 
-bool Stage1::DeleteMatching(int color) {
+bool Stage1::DeleteMatching() {
 	for (int i = 1; i < COLUMNS - 1; i++) {
 		for (int j = 2; j < ROWS - 1; j++) {
 			//Horizontal
-			if (color != EMPTY_SPACE) {
-				if ((grid[i - 1][j].color == color && grid[i + 1][j].color == color && grid[i][j].color == color)) {
+			if (grid[i][j].color != EMPTY_SPACE) {
+				if ((grid[i - 1][j].color == grid[i][j].color && grid[i + 1][j].color == grid[i][j].color)) {
 
 					control = false;
 
@@ -265,17 +270,18 @@ bool Stage1::DeleteMatching(int color) {
 					grid[i + 1][j].pointer = nullptr;
 					grid[i][j].pointer = nullptr;
 
+					KeepChecking(i - 2, j, grid[i][j].color, LEFT);
+					KeepChecking(i + 2, j, grid[i][j].color, RIGHT);
+
 					grid[i - 1][j].color = EMPTY_SPACE;
 					grid[i + 1][j].color = EMPTY_SPACE;
 					grid[i][j].color = EMPTY_SPACE;
 
-					KeepChecking(i - 2, j, color, LEFT);
-					KeepChecking(i + 2, j, color, RIGHT);
-
 					deleted = true;
+					return true;
 				}
 				//Vertical
-				if (grid[i][j - 1].color == color && grid[i][j + 1].color == color && grid[i][j].color == color) {
+				if (grid[i][j - 1].color == grid[i][j].color && grid[i][j + 1].color == grid[i][j].color) {
 
 					control = false;
 
@@ -306,17 +312,18 @@ bool Stage1::DeleteMatching(int color) {
 					grid[i][j + 1].pointer = nullptr;
 					grid[i][j].pointer = nullptr;
 
+					KeepChecking(i, j - 2, grid[i][j].color, TOP);
+					KeepChecking(i, j + 2, grid[i][j].color, BOTTOM);
+
 					grid[i][j - 1].color = EMPTY_SPACE;
 					grid[i][j + 1].color = EMPTY_SPACE;
 					grid[i][j].color = EMPTY_SPACE;
 
-					KeepChecking(i, j - 2, color, TOP);
-					KeepChecking(i, j + 2, color, BOTTOM);
-
 					deleted = true;
+					return true;
 				}
 				//Diagonal UL->BR
-				if (grid[i - 1][j - 1].color == color && grid[i + 1][j + 1].color == color && grid[i][j].color == color) {
+				if (grid[i - 1][j - 1].color == grid[i][j].color && grid[i + 1][j + 1].color == grid[i][j].color) {
 
 					control = false;
 
@@ -354,17 +361,18 @@ bool Stage1::DeleteMatching(int color) {
 					grid[i + 1][j + 1].pointer = nullptr;
 					grid[i][j].pointer = nullptr;
 
+					KeepChecking(i - 2, j - 2, grid[i][j].color, TOP_LEFT);
+					KeepChecking(i + 2, j + 2, grid[i][j].color, BOTTOM_RIGHT);
+
 					grid[i - 1][j - 1].color = EMPTY_SPACE;
 					grid[i + 1][j + 1].color = EMPTY_SPACE;
 					grid[i][j].color = EMPTY_SPACE;
 
-					KeepChecking(i - 2, j - 2, color, TOP_LEFT);
-					KeepChecking(i + 2, j + 2, color, BOTTOM_RIGHT);
-
 					deleted = true;
+					return true;
 				}
 				//Diagonal BL->UR
-				if (grid[i - 1][j + 1].color == color && grid[i + 1][j - 1].color == color && grid[i][j].color == color) {
+				if (grid[i - 1][j + 1].color == grid[i][j].color && grid[i + 1][j - 1].color == grid[i][j].color) {
 
 					control = false;
 
@@ -402,14 +410,15 @@ bool Stage1::DeleteMatching(int color) {
 					grid[i + 1][j - 1].pointer = nullptr;
 					grid[i][j].pointer = nullptr;
 
+					KeepChecking(i - 2, j + 2, grid[i][j].color, BOTTOM_LEFT);
+					KeepChecking(i + 2, j - 2, grid[i][j].color, TOP_RIGHT);
+
 					grid[i - 1][j + 1].color = EMPTY_SPACE;
 					grid[i + 1][j - 1].color = EMPTY_SPACE;
 					grid[i][j].color = EMPTY_SPACE;
 
-					KeepChecking(i - 2, j + 2, color, BOTTOM_LEFT);
-					KeepChecking(i + 2, j - 2, color, TOP_RIGHT);
-
 					deleted = true;
+					return true;
 				}
 			}
 		}
@@ -462,6 +471,10 @@ bool Stage1::CleanUp()
 	if (endTexture_player2 != nullptr)
 		endTexture_player2 = nullptr;
 
+	rect1 = { 47, 15, 33, 33 };
+	section1 = &rect1;
+	rect2 = { 0, 47, 128, 159 };
+	section2 = &rect2;
 	return true;
 }
 bool Stage1::AddEnemy(int x, int y)
@@ -513,6 +526,9 @@ void Stage1::SpawnBomberman(const Spawnpoint& info)
 					control = true;
 				}
 
+				if (finished) {
+					finished = false;
+				}
 
 				if (counter == 4) {
 					counter = 1;
@@ -531,7 +547,7 @@ void Stage1::SpawnBomberman(const Spawnpoint& info)
 bool Stage1::KeepChecking(int x, int y, int color, int direction) {
 	if (grid[x][y].pointer != nullptr) {
 		if (grid[x][y].pointer->color == color) {
-			for (int i = y - 1; y < 1; y--) {
+			for (int i = y - 1; i > 1; i--) {
 				if (grid[x][i].pointer != nullptr) {
 					willFall.push_back(&grid[x][i]);
 				}
@@ -585,62 +601,76 @@ bool Stage1::Explode() {
 			if (grid[i][j].color == PRIMED_BOMB) {
 				for (int k = 1; k <= power; k++) {
 					for (int l = j - 1; l > 1; l--) {
-						if (grid[i][l-k].pointer != nullptr) {
-							willFall.push_back(&grid[i][l-k]);
+						if (l-k >= 0) {
+							if (grid[i][l - k].pointer != nullptr) {
+								willFall.push_back(&grid[i][l - k]);
+							}
 						}
-						if (grid[i-k][l].pointer != nullptr) {
-							willFall.push_back(&grid[i-k][l]);
+						if (i - k >= 0) {
+							if (grid[i - k][l].pointer != nullptr) {
+								willFall.push_back(&grid[i - k][l]);
+							}
 						}
-						if (grid[i+k][l].pointer != nullptr) {
-							willFall.push_back(&grid[i+k][l]);
+						if (i + k <= COLUMNS-1) {
+							if (grid[i + k][l].pointer != nullptr) {
+								willFall.push_back(&grid[i + k][l]);
+							}
 						}
 					}
 					if (grid[i][j - k].pointer != nullptr) {
-						if (grid[i][j - k].color == BOMB) {
-							grid[i][j - k].color = PRIMED_BOMB;
-						}
-						else {
-							grid[i][j - k].pointer->currentAnimation = nullptr;
-							grid[i][j - k].pointer->falling = false;
-							grid[i][j - k].pointer->deleted = true;
-							grid[i][j - k].pointer = nullptr;
-							grid[i][j - k].color = EMPTY_SPACE;
+						if (j - k >= 0) {
+							if (grid[i][j - k].color == BOMB) {
+								grid[i][j - k].color = PRIMED_BOMB;
+							}
+							else {
+								grid[i][j - k].pointer->currentAnimation = nullptr;
+								grid[i][j - k].pointer->falling = false;
+								grid[i][j - k].pointer->deleted = true;
+								grid[i][j - k].pointer = nullptr;
+								grid[i][j - k].color = EMPTY_SPACE;
+							}
 						}
 					}
 					if (grid[i][j + k].pointer != nullptr) {
-						if (grid[i][j + k].color == BOMB) {
-							grid[i][j + k].color = PRIMED_BOMB;
-						}
-						else {
-							grid[i][j + k].pointer->currentAnimation = nullptr;
-							grid[i][j + k].pointer->falling = false;
-							grid[i][j + k].pointer->deleted = true;
-							grid[i][j + k].pointer = nullptr;
-							grid[i][j + k].color = EMPTY_SPACE;
+						if (j + k <= ROWS-1) {
+							if (grid[i][j + k].color == BOMB) {
+								grid[i][j + k].color = PRIMED_BOMB;
+							}
+							else {
+								grid[i][j + k].pointer->currentAnimation = nullptr;
+								grid[i][j + k].pointer->falling = false;
+								grid[i][j + k].pointer->deleted = true;
+								grid[i][j + k].pointer = nullptr;
+								grid[i][j + k].color = EMPTY_SPACE;
+							}
 						}
 					}
 					if (grid[i - k][j].pointer != nullptr) {
-						if (grid[i-k][j].color == BOMB) {
-							grid[i-k][j].color = PRIMED_BOMB;
-						}
-						else {
-							grid[i - k][j].pointer->currentAnimation = nullptr;
-							grid[i - k][j].pointer->falling = false;
-							grid[i - k][j].pointer->deleted = true;
-							grid[i - k][j].pointer = nullptr;
-							grid[i - k][j].color = EMPTY_SPACE;
+						if (i - k >= 0) {
+							if (grid[i - k][j].color == BOMB) {
+								grid[i - k][j].color = PRIMED_BOMB;
+							}
+							else {
+								grid[i - k][j].pointer->currentAnimation = nullptr;
+								grid[i - k][j].pointer->falling = false;
+								grid[i - k][j].pointer->deleted = true;
+								grid[i - k][j].pointer = nullptr;
+								grid[i - k][j].color = EMPTY_SPACE;
+							}
 						}
 					}
 					if (grid[i + k][j].pointer != nullptr) {
-						if (grid[i+k][j].color == BOMB) {
-							grid[i+k][j].color = PRIMED_BOMB;
-						}
-						else {
-							grid[i + k][j].pointer->currentAnimation = nullptr;
-							grid[i + k][j].pointer->falling = false;
-							grid[i + k][j].pointer->deleted = true;
-							grid[i + k][j].pointer = nullptr;
-							grid[i + k][j].color = EMPTY_SPACE;
+						if (i + k <= COLUMNS - 1) {
+							if (grid[i + k][j].color == BOMB) {
+								grid[i + k][j].color = PRIMED_BOMB;
+							}
+							else {
+								grid[i + k][j].pointer->currentAnimation = nullptr;
+								grid[i + k][j].pointer->falling = false;
+								grid[i + k][j].pointer->deleted = true;
+								grid[i + k][j].pointer = nullptr;
+								grid[i + k][j].color = EMPTY_SPACE;
+							}
 						}
 					}
 

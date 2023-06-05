@@ -232,6 +232,9 @@ Update_Status ModulePieces::Update()
 			block[1]->active = false;
 			block[2]->active = false;
 			block[i]->pos.y = round(block[i]->pos.y / 16) * 16;
+			if (block[0]->falling == false && block[1]->falling == false && block[2]->falling == false) {
+				App->stage1->finished = true;
+			}
 			App->stage1->Square(block[i]->pos.x / 16, block[i]->pos.y / 16, block[i]->color, block[i]);
 		}
 	}

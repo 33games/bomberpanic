@@ -67,7 +67,7 @@ public:
 	bool LeftOpen(int x, int y);
 	bool RightOpen(int x, int y);
 	bool DownOpen(int x, int y);
-	bool DeleteMatching(int color);
+	bool DeleteMatching();
 	bool FallAgain();
 	bool KeepChecking(int x, int y, int color, int direction);
 
@@ -82,7 +82,7 @@ public:
 
 	bool control = true;
 
-	bool stop, deleted, lit = false;
+	bool stop, deleted, lit, finished = false;
 
 	int score = 0;
 
@@ -96,7 +96,9 @@ public:
 
 	char scoreText[10] = { "\0" };
 
-	int scoreFont;
+	char powerText[8] = { "\0" };
+
+	int font, font2;
 
 	bool forcedstop = false;
 
