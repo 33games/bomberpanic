@@ -698,7 +698,6 @@ bool Stage1::Explode() {
 							}
 						}
 					}
-
 				}
 				App->audio->PlayFx(bomb, 0);
 				grid[i][j].pointer->currentAnimation = nullptr;
