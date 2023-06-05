@@ -80,7 +80,7 @@ public:
 
 	//Puyo* willFall[MAX_BOMBERMAN];
 
-	bool control = true;
+	bool control, once = true;
 
 	bool stop, deleted, lit, finished = false;
 
@@ -92,7 +92,7 @@ public:
 
 	int power = 1;
 
-	uint place;
+	uint place, lose, match, bomb, bgchange, win;
 
 	char scoreText[10] = { "\0" };
 

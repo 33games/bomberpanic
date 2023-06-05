@@ -49,6 +49,11 @@ bool Stage1::Start()
 
 	App->audio->PlayMusic("Assets/Music/Stage 1.ogg", 1.0f);
 	place = App->audio->LoadFx("Assets/SFX/place.wav");
+	match = App->audio->LoadFx("Assets/SFX/match.wav");
+	lose = App->audio->LoadFx("Assets/SFX/lose.wav");
+	bomb = App->audio->LoadFx("Assets/SFX/bomb.wav");
+	bgchange = App->audio->LoadFx("Assets/SFX/bgchange.wav");
+	win = App->audio->LoadFx("Assets/SFX/Stage Clear.ogg");
 
 	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
 	{
@@ -91,6 +96,10 @@ Update_Status Stage1::Update()
 		endTexture_player1 = App->textures->Load("Assets/Sprites/winScreen.png");
 		endTexture_player2 = App->textures->Load("Assets/Sprites/loseScreen.png");
 		App->fade->FadeToBlack((Module*)App->stage1, (Module*)App->sceneIntro, 200);
+		if (once) {
+			App->audio->PlayFx(win, 0);
+			once = !once;
+		}
 	}
 
 
@@ -98,14 +107,16 @@ Update_Status Stage1::Update()
 
 		endTexture_player1 = App->textures->Load("Assets/Sprites/loseScreen.png");
 		endTexture_player2 = App->textures->Load("Assets/Sprites/winScreen.png");
+		App->audio->PlayFx(lose, 0);
 		App->fade->FadeToBlack((Module*)App->stage1, (Module*)App->sceneIntro, 200);
 
-		stop = true;
+		forcedstop = true;
 	}
 
 	if (keys[SDL_Scancode::SDL_SCANCODE_F4] == KEY_STATE::KEY_DOWN && this->IsEnabled()) {
 		endTexture_player1 = App->textures->Load("Assets/Sprites/winScreen.png");
 		endTexture_player2 = App->textures->Load("Assets/Sprites/loseScreen.png");
+		App->audio->PlayFx(win, 0);
 		App->fade->FadeToBlack((Module*)App->stage1, (Module*)App->sceneIntro, 200);
 	}
 
@@ -136,6 +147,7 @@ Update_Status Stage1::PostUpdate()
 		rect2.x += 128;
 		next_change += 5000;
 		power += 1;
+		App->audio->PlayFx(bgchange, 0);
 	}
 
 	App->render->Blit(bgTexture2, 63, 15, section1);
@@ -169,7 +181,11 @@ bool Stage1::Square(int x, int y, int color, Puyo* piece)
 		endTexture_player2 = App->textures->Load("Assets/Sprites/winScreen.png");
 
 		App->fade->FadeToBlack((Module*)App->stage1, (Module*)App->sceneIntro, 200);
-		stop = true;
+		if (once) {
+			App->audio->PlayFx(lose, 0);
+			once = !once;
+		}
+		forcedstop = true;
 		return true;
 	}
 
@@ -237,6 +253,8 @@ bool Stage1::DeleteMatching() {
 
 					control = false;
 
+					App->audio->PlayFx(match, 0);
+
 					score += 500;
 
 					for (int k = j - 1; k > 1; k--) {
@@ -285,6 +303,8 @@ bool Stage1::DeleteMatching() {
 
 					control = false;
 
+					App->audio->PlayFx(match, 0);
+
 					score += 500;
 
 					for (int k = j - 2; k > 1; k--) {
@@ -326,6 +346,8 @@ bool Stage1::DeleteMatching() {
 				if (grid[i - 1][j - 1].color == grid[i][j].color && grid[i + 1][j + 1].color == grid[i][j].color) {
 
 					control = false;
+
+					App->audio->PlayFx(match, 0);
 
 					score += 500;
 
@@ -375,6 +397,8 @@ bool Stage1::DeleteMatching() {
 				if (grid[i - 1][j + 1].color == grid[i][j].color && grid[i + 1][j - 1].color == grid[i][j].color) {
 
 					control = false;
+
+					App->audio->PlayFx(match, 0);
 
 					score += 500;
 
@@ -460,6 +484,7 @@ bool Stage1::CleanUp()
 			grid[i][j].pointer = nullptr;
 		}
 	}
+	forcedstop = false;
 	counter = 0;
 	score = 0;
 	willFall.clear();
@@ -512,7 +537,7 @@ void Stage1::SpawnBomberman(const Spawnpoint& info)
 	{
 		if (bombermans[i] == nullptr && !stop)
 		{
-			if (bombermans[i] == bombermans[0] || (bombermans[i-1]->block[0]->falling == false && bombermans[i-1]->block[1]->falling == false && bombermans[i-1]->block[2]->falling == false))
+			if (bombermans[i] == bombermans[0] || (bombermans[i-1]->block[0]->falling == false && bombermans[i-1]->block[1]->falling == false && bombermans[i-1]->block[2]->falling == false && !forcedstop))
 			{
 				bombermans[i] = new ModulePieces(true);
 
@@ -675,6 +700,7 @@ bool Stage1::Explode() {
 					}
 
 				}
+				App->audio->PlayFx(bomb, 0);
 				grid[i][j].pointer->currentAnimation = nullptr;
 				grid[i][j].pointer->falling = false;
 				grid[i][j].pointer->deleted = true;
