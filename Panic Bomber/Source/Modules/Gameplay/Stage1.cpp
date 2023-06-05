@@ -46,6 +46,7 @@ bool Stage1::Start()
 
 	bgTexture = App->textures->Load("Assets/Sprites/BattleArena.png");
 	bgTexture2 = App->textures->Load("Assets/Sprites/BattleArenaBackground.png");
+
 	App->audio->PlayMusic("Assets/Music/Stage 1.ogg", 1.0f);
 	place = App->audio->LoadFx("Assets/SFX/place.wav");
 
@@ -92,7 +93,7 @@ Update_Status Stage1::Update()
 	}
 
 
-	if (keys[SDL_Scancode::SDL_SCANCODE_F5] == KEY_STATE::KEY_DOWN) {
+	if (keys[SDL_Scancode::SDL_SCANCODE_F5] == KEY_STATE::KEY_DOWN && this->IsEnabled()) {
 
 		endTexture_player1 = App->textures->Load("Assets/Sprites/loseScreen.png");
 		endTexture_player2 = App->textures->Load("Assets/Sprites/winScreen.png");
@@ -101,18 +102,18 @@ Update_Status Stage1::Update()
 		stop = true;
 	}
 
-	if (keys[SDL_Scancode::SDL_SCANCODE_F4] == KEY_STATE::KEY_DOWN) {
+	if (keys[SDL_Scancode::SDL_SCANCODE_F4] == KEY_STATE::KEY_DOWN && this->IsEnabled()) {
 		endTexture_player1 = App->textures->Load("Assets/Sprites/winScreen.png");
 		endTexture_player2 = App->textures->Load("Assets/Sprites/loseScreen.png");
 		App->fade->FadeToBlack((Module*)App->stage1, (Module*)App->sceneIntro, 200);
 	}
 
-	if (keys[SDL_Scancode::SDL_SCANCODE_F3] == KEY_STATE::KEY_DOWN) {
+	if (keys[SDL_Scancode::SDL_SCANCODE_F3] == KEY_STATE::KEY_DOWN && this->IsEnabled()) {
 
 		this->score += 333;
 	}
 
-	if (keys[SDL_Scancode::SDL_SCANCODE_F2] == KEY_STATE::KEY_DOWN) {
+	if (keys[SDL_Scancode::SDL_SCANCODE_F2] == KEY_STATE::KEY_DOWN && this->IsEnabled()) {
 
 		forcedstop = !forcedstop;
 				
@@ -127,19 +128,20 @@ Update_Status Stage1::PostUpdate()
 	App->render->Blit(bgTexture, 0, 0, NULL);
 	sprintf_s(scoreText, 10, "%7d", score);
 
+	if (scoreFont != NULL) {
+		App->fonts->BlitText(2, 16, scoreFont, scoreText);
+	}
+
 	if (score > next_change)
 	{
 		rect1.x += 128;
 		rect2.x += 128;
 		next_change += 5000;
+		power += 1;
 	}
 
 	App->render->Blit(bgTexture2, 63, 15, section1);
 	App->render->Blit(bgTexture2, 16, 47, section2);
-
-	if (scoreFont != NULL) {
-		App->fonts->BlitText(2, 16, scoreFont, scoreText);
-	}
 
 	for (uint i = 0; i < MAX_BOMBERMAN; ++i)
 	{
