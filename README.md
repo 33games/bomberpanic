@@ -11,12 +11,18 @@ Pol Celaya ([pcelaya](https://github.com/pcelaya))
 
 Ivan Molins ([vnmolins](https://github.com/vnmolins))
 
-# Controls
+# Controls (Pad / Keyboard)
 ## Menu Controls
-Press SPACE to skip the Main Menu and start a Game.
+Press (A / SPACE) to skip the Main Menu and start a Game.
 
 ## In-game Controls:
-Press A/D to move the bombermans Left and Right.
-Press S to make the bombermans descend faster.
-Press Q/E to rotate the block counterclockwise/clockwise.
-Press L to "Lose" the game and go back to the main Menu
+Press (Left, Right / A, D) to move the bombermans Left and Right.
+Press (Down / S) to make the bombermans descend faster.
+Press (L1, R1 / Q, E) to rotate the block counterclockwise/clockwise.
+
+## Dev Controls (Keyboard Only):
+Press F1 to show grid spaces and color code them.
+Press F2 to completely stop the game.
+Press F3 to add 333 points to your score.
+Press F4 to instantly win the game.
+Press F5 to instantly lose the game.
